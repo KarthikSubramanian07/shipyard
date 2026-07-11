@@ -1,0 +1,98 @@
+name: Deploy
+
+# Deploys to Cloudflare on push to main. Requires repository secrets:
+#   CLOUDFLARE_API_TOKEN   – token with Workers Scripts + D1 + R2 edit
+#   CLOUDFLARE_ACCOUNT_ID  – your account id
+# And a wrangler.jsonc with real D1/R2 ids (see docs/DEPLOY.md).
+# Runs are skipped automatically when CLOUDFLARE_API_TOKEN isn't set.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy-web:
+    name: Deploy web (Workers via OpenNext)
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: apps/web
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Guard — require Cloudflare token
+        id: guard
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "No CLOUDFLARE_API_TOKEN set — skipping deploy."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.guard.outputs.skip != 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - if: steps.guard.outputs.skip != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - if: steps.guard.outputs.skip != 'true'
+        name: Install
+        run: pnpm install --frozen-lockfile
+        working-directory: .
+
+      - if: steps.guard.outputs.skip != 'true'
+        name: Apply D1 migrations (remote)
+        run: pnpm db:migrate:remote
+
+      - if: steps.guard.outputs.skip != 'true'
+        name: Build & deploy
+        run: pnpm deploy
+
+  deploy-og:
+    name: Deploy OG worker (Rust)
+    runs-on: ubuntu-latest
+    environment: production
+    defaults:
+      run:
+        working-directory: workers/og
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Guard — require Cloudflare token
+        id: guard
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.guard.outputs.skip != 'true'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - if: steps.guard.outputs.skip != 'true'
+        name: Install build tooling
+        run: |
+          cargo install worker-build --version "^0.1" --locked || true
+          # worker 0.5 requires a matching wasm-bindgen CLI (see workers/og/README.md)
+          cargo install -f wasm-bindgen-cli --version 0.2.126 --locked || true
+
+      - if: steps.guard.outputs.skip != 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - if: steps.guard.outputs.skip != 'true'
+        name: Deploy
+        run: npx wrangler@4 deploy
