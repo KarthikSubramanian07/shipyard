@@ -10,7 +10,7 @@ Log the films, shows, and books you love. Then write the endings they *should* h
 
 No signup wall to read. No paywall, ever. Runs on $0 infrastructure.
 
-[![CI](https://github.com/winnerkarthik/shipyard/actions/workflows/ci.yml/badge.svg)](https://github.com/winnerkarthik/shipyard/actions/workflows/ci.yml)
+[![CI](https://github.com/KarthikSubramanian07/shipyard/actions/workflows/ci.yml/badge.svg)](https://github.com/KarthikSubramanian07/shipyard/actions/workflows/ci.yml)
 &nbsp;·&nbsp; Next.js 15 + Cloudflare Workers + D1 + a Rust OG-card worker
 &nbsp;·&nbsp; [Buy me a coffee ☕](https://buymeacoffee.com/winnerkarthik)
 

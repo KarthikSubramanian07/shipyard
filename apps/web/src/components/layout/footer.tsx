@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Logo } from "@/components/ui/logo";
 
 const BMC_URL = "https://buymeacoffee.com/winnerkarthik";
-const GITHUB_URL = "https://github.com/winnerkarthik/shipyard";
+const GITHUB_URL = "https://github.com/KarthikSubramanian07/shipyard";
 
 export function SiteFooter() {
   return (
