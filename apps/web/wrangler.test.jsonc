@@ -1,0 +1,26 @@
+{
+  // Dedicated Wrangler config for the Vitest workers pool. It uses a tiny
+  // throwaway worker entry (the real app entry is the OpenNext bundle, which
+  // isn't built during tests) plus a local Miniflare-backed D1 database.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "shipyard-test",
+  "main": "test/worker-entry.ts",
+  "compatibility_date": "2025-03-25",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "shipyard-db-test",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "shipyard-media-test" }],
+  "vars": {
+    "NEXT_PUBLIC_APP_URL": "http://localhost:3000",
+    "NEXT_PUBLIC_SITE_NAME": "Shipyard",
+    "TMDB_BEARER": "test-token",
+    "GOOGLE_CLIENT_ID": "test-client",
+    "GOOGLE_CLIENT_SECRET": "test-secret"
+  }
+}

@@ -1,0 +1,12 @@
+# Copy to `.dev.vars` for local development (never commit .dev.vars).
+# In production set these with: wrangler secret put <NAME>
+
+# TMDB v4 "Read Access Token" (Bearer). Get one free at:
+# https://www.themoviedb.org/settings/api  (use the v4 token, not the v3 key)
+TMDB_BEARER="your-tmdb-v4-read-access-token"
+
+# Google OAuth (optional — email/password login works without it).
+# Create credentials at https://console.cloud.google.com/apis/credentials
+# Authorized redirect URI: http://localhost:3000/login/google/callback
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""

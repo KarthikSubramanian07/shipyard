@@ -1,0 +1,215 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ── Shipyard design language ───────────────────────────────────────────────
+   "Warm industrial / maritime literary." Where ships get built.
+   Base:      warm paper + warm ink (never pure #fff / #000 — always warm).
+   Flare:     rust-vermilion. The signal flare. Primary action + brand.
+   Verdigris: oxidized copper-teal. Aged metal on a hull. Secondary.
+   Brass:     tarnished gold. Kudos, highlights, the "shiny" accent.
+   Type:      Fraunces (display), Geist (UI), Newsreader (long-form reading).
+──────────────────────────────────────────────────────────────────────────── */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Surfaces */
+  --background: #f4efe4; /* warm paper */
+  --foreground: #211c15; /* warm ink */
+  --card: #fbf8f1;
+  --card-foreground: #211c15;
+  --popover: #fffdf8;
+  --popover-foreground: #211c15;
+
+  /* Neutrals */
+  --muted: #e8e0cf;
+  --muted-foreground: #6c6350;
+  --border: #ddd3bf;
+  --input: #ded4c0;
+  --ring: #d0472a;
+
+  /* Brand — Flare (primary) */
+  --primary: #cf4626;
+  --primary-foreground: #fdf6ef;
+
+  /* Brand — Verdigris (secondary) */
+  --secondary: #0e7c6f;
+  --secondary-foreground: #f0fbf8;
+
+  /* Brand — Brass (accent) */
+  --accent: #b07f2b;
+  --accent-foreground: #fffaf0;
+
+  /* Feedback */
+  --destructive: #c0392b;
+  --destructive-foreground: #fdf6ef;
+  --success: #2f7d4f;
+
+  /* Raw brand ramps (used directly for washes / gradients) */
+  --flare: #cf4626;
+  --flare-soft: #f7e2d8;
+  --verdigris: #0e7c6f;
+  --verdigris-soft: #d6ede8;
+  --brass: #b07f2b;
+  --brass-soft: #f2e6c9;
+
+  --radius: 0.7rem;
+}
+
+.dark {
+  --background: #16130d; /* warm near-black */
+  --foreground: #ece4d5;
+  --card: #1e1a12;
+  --card-foreground: #ece4d5;
+  --popover: #221d15;
+  --popover-foreground: #ece4d5;
+
+  --muted: #262118;
+  --muted-foreground: #a89e8a;
+  --border: #322c20;
+  --input: #322c20;
+  --ring: #e8623d;
+
+  --primary: #e8623d;
+  --primary-foreground: #1a0f09;
+
+  --secondary: #2ba393;
+  --secondary-foreground: #04140f;
+
+  --accent: #d4a23e;
+  --accent-foreground: #1a1204;
+
+  --destructive: #e05a4a;
+  --destructive-foreground: #1a0f09;
+  --success: #56b37a;
+
+  --flare: #e8623d;
+  --flare-soft: #37211a;
+  --verdigris: #2ba393;
+  --verdigris-soft: #10261f;
+  --brass: #d4a23e;
+  --brass-soft: #2b230f;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+
+  --color-flare: var(--flare);
+  --color-flare-soft: var(--flare-soft);
+  --color-verdigris: var(--verdigris);
+  --color-verdigris-soft: var(--verdigris-soft);
+  --color-brass: var(--brass);
+  --color-brass-soft: var(--brass-soft);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-reading: var(--font-newsreader), Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: light dark;
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--flare) 28%, transparent);
+    color: var(--foreground);
+  }
+
+  /* Headings lean on the display serif for literary personality. */
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.011em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Thin, warm scrollbars. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 40%, transparent) transparent;
+  }
+}
+
+@layer utilities {
+  /* Subtle paper grain for large surfaces — adds warmth without noise. */
+  .bg-grain {
+    background-image: radial-gradient(
+      color-mix(in oklab, var(--foreground) 4%, transparent) 0.5px,
+      transparent 0.5px
+    );
+    background-size: 4px 4px;
+  }
+
+  /* A flare-lit gradient used for hero surfaces and empty states. */
+  .bg-flare-wash {
+    background-image:
+      radial-gradient(120% 120% at 0% 0%, var(--flare-soft) 0%, transparent 45%),
+      radial-gradient(120% 120% at 100% 0%, var(--verdigris-soft) 0%, transparent 50%);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Long-form reading measure + rhythm for fic + reviews. */
+  .prose-shipyard {
+    font-family: var(--font-reading);
+    font-size: 1.125rem;
+    line-height: 1.75;
+    max-width: 68ch;
+  }
+  .prose-shipyard p {
+    margin-bottom: 1.15em;
+  }
+}

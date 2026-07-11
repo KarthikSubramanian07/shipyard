@@ -1,0 +1,41 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "shipyard",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-03-25",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    // Public, non-secret config. Override per-environment as needed.
+    "NEXT_PUBLIC_APP_URL": "http://localhost:3000",
+    "NEXT_PUBLIC_SITE_NAME": "Shipyard"
+    // Secrets (NOT here): TMDB_BEARER, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET.
+    // Set locally in .dev.vars and in prod via `wrangler secret put <NAME>`.
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "shipyard-db",
+      "database_id": "PLACEHOLDER_D1_DATABASE_ID",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "r2_buckets": [
+    {
+      // User-uploaded avatars only. Media posters are always hotlinked.
+      "binding": "MEDIA",
+      "bucket_name": "shipyard-media"
+    },
+    {
+      // OpenNext incremental cache (ISR/SSG).
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "shipyard-next-cache"
+    }
+  ]
+}
