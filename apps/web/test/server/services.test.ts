@@ -10,7 +10,7 @@ import { getFollowingFeed } from "@/lib/services/feed";
 import { addChapter, createFic, getFicsForWork, toggleKudos } from "@/lib/services/fics";
 import { getReviewsForWork, upsertLog } from "@/lib/services/logs";
 import { searchWorks } from "@/lib/services/search";
-import { addComment, follow, toggleLike } from "@/lib/services/social";
+import { addComment, follow, getFlare, setFlare } from "@/lib/services/social";
 import { createUser, getProfileStats } from "@/lib/services/users";
 import { getWorkAggregate, getWorkBySlug, upsertWork } from "@/lib/services/works";
 
@@ -110,19 +110,26 @@ describe("social graph & feed", () => {
     expect(feed.some((f) => f.author.id === author.id && f.activity.kind === "log")).toBe(true);
   });
 
-  it("toggles likes and keeps the counter in sync", async () => {
+  it("sets, changes, and clears flares while keeping the counter in sync", async () => {
     const work = await upsertWork(db, detail());
     const author = await makeUser();
-    const liker = await makeUser();
+    const reactor = await makeUser();
     const logId = await upsertLog(db, { userId: author.id, workId: work.id, rating: 7 });
+    const countOf = async () =>
+      (await db.select().from(schema.logs).where(eq(schema.logs.id, logId)).get())!.likeCount;
 
-    expect(await toggleLike(db, liker.id, "log", logId)).toBe(true);
-    let row = await db.select().from(schema.logs).where(eq(schema.logs.id, logId)).get();
-    expect(row!.likeCount).toBe(1);
+    // Add a flare -> count 1.
+    expect(await setFlare(db, reactor.id, "log", logId, "peak")).toBe("peak");
+    expect(await countOf()).toBe(1);
+    expect(await getFlare(db, reactor.id, "log", logId)).toBe("peak");
 
-    expect(await toggleLike(db, liker.id, "log", logId)).toBe(false);
-    row = await db.select().from(schema.logs).where(eq(schema.logs.id, logId)).get();
-    expect(row!.likeCount).toBe(0);
+    // Change flare -> count unchanged.
+    expect(await setFlare(db, reactor.id, "log", logId, "sob")).toBe("sob");
+    expect(await countOf()).toBe(1);
+
+    // Clear flare -> count 0.
+    expect(await setFlare(db, reactor.id, "log", logId, null)).toBe(null);
+    expect(await countOf()).toBe(0);
   });
 
   it("adds comments and bumps the count", async () => {

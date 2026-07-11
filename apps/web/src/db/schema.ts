@@ -25,6 +25,9 @@ export const FIC_RATINGS = ["general", "teen", "mature"] as const;
 export const FIC_CANON = ["canon", "canon-divergent", "au", "crack"] as const;
 export const FIC_TAG_KINDS = ["tone", "pairing", "freeform"] as const;
 export const ENTITY_TYPES = ["log", "fic", "list", "reaction", "comment"] as const;
+// Flares: expressive fandom reactions (one per user per entity, changeable).
+export const FLARE_KEYS = ["heart", "peak", "sob", "mind", "more", "lol"] as const;
+export type FlareKey = (typeof FLARE_KEYS)[number];
 export const SHELF_SLUGS = ["watched", "reading", "want", "favorites"] as const;
 export const NOTIFICATION_TYPES = ["follow", "like", "comment", "kudos", "chapter"] as const;
 export const ACTIVITY_KINDS = ["log", "review", "fic", "list", "reaction"] as const;
@@ -377,6 +380,8 @@ export const likes = sqliteTable(
       .references(() => users.id, { onDelete: "cascade" }),
     entityType: text("entity_type", { enum: ENTITY_TYPES }).notNull(),
     entityId: text("entity_id").notNull(),
+    // Which flare the user threw. One per user per entity, changeable.
+    flare: text("flare", { enum: FLARE_KEYS }).notNull().default("heart"),
     createdAt: integer("created_at", { mode: "timestamp" })
       .notNull()
       .default(sql`(unixepoch())`),

@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "57599ccc-75d4-4326-988f-b2d868975cb3",
-  "prevId": "7f486025-6baa-42ff-9c50-4c1532dd6681",
+  "id": "200c9d8f-aaa0-416e-bf85-45d7a4c46dd3",
+  "prevId": "57599ccc-75d4-4326-988f-b2d868975cb3",
   "tables": {
     "activities": {
       "name": "activities",
@@ -858,6 +858,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "flare": {
+          "name": "flare",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'heart'"
         },
         "created_at": {
           "name": "created_at",

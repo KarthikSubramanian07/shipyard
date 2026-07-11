@@ -2,8 +2,9 @@ import Link from "next/link";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Stars } from "@/components/ui/star-rating";
-import { LikeButton } from "@/components/interactions/like-button";
+import { FlareButton } from "@/components/interactions/flare-button";
 import { SpoilerText } from "@/components/spoiler-text";
+import type { FlareKey } from "@/db/schema";
 import { ratingToStars } from "@/lib/rating";
 import { relativeTime } from "@/lib/utils";
 
@@ -19,12 +20,12 @@ export interface ReviewData {
 
 export function ReviewCard({
   review,
-  liked,
+  flare = null,
   authed,
   path,
 }: {
   review: ReviewData;
-  liked: boolean;
+  flare?: FlareKey | null;
   authed: boolean;
   path: string;
 }) {
@@ -48,10 +49,10 @@ export function ReviewCard({
       ) : null}
       <SpoilerText text={review.reviewBody} className="text-foreground/90 text-sm" />
 
-      <LikeButton
+      <FlareButton
         entityType="log"
         entityId={review.id}
-        initialLiked={liked}
+        initialFlare={flare}
         initialCount={review.likeCount}
         authed={authed}
         path={path}

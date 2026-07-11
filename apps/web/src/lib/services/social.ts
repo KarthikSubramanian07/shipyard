@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, count, eq, sql } from "drizzle-orm";
 import type { DB } from "@/db";
 import {
   comments,
@@ -10,6 +10,7 @@ import {
   reactions,
   users,
   type EntityType,
+  type FlareKey,
 } from "@/db/schema";
 import { newId } from "@/lib/id";
 import { notify } from "./notifications";
@@ -33,16 +34,17 @@ export async function unfollow(db: DB, followerId: string, followingId: string):
     .where(and(eq(follows.followerId, followerId), eq(follows.followingId, followingId)));
 }
 
-/* ── Likes ────────────────────────────────────────────────────────────────── */
+/* ── Flares (expressive reactions) ────────────────────────────────────────── */
 
-const LIKE_COUNTER = {
+// Tables that carry a denormalized total-flare counter (kept as `likeCount`).
+const FLARE_COUNTER = {
   log: logs,
   reaction: reactions,
   list: lists,
 } as const;
 
-function bumpLikeCounter(db: DB, entityType: EntityType, entityId: string, delta: number) {
-  const table = LIKE_COUNTER[entityType as keyof typeof LIKE_COUNTER];
+function bumpFlareCounter(db: DB, entityType: EntityType, entityId: string, delta: number) {
+  const table = FLARE_COUNTER[entityType as keyof typeof FLARE_COUNTER];
   if (!table) return;
   return db
     .update(table)
@@ -50,54 +52,76 @@ function bumpLikeCounter(db: DB, entityType: EntityType, entityId: string, delta
     .where(eq(table.id, entityId));
 }
 
-/** Toggle a like. Returns the resulting liked state. */
-export async function toggleLike(
+const flareWhere = (userId: string, entityType: EntityType, entityId: string) =>
+  and(eq(likes.userId, userId), eq(likes.entityType, entityType), eq(likes.entityId, entityId));
+
+/**
+ * Set (or change, or clear) a user's flare on an entity. One flare per user per
+ * entity. Pass `null` to remove. Returns the resulting flare (or null). The
+ * total counter only moves when a flare is added or removed, not when changed.
+ */
+export async function setFlare(
   db: DB,
   userId: string,
   entityType: EntityType,
   entityId: string,
-): Promise<boolean> {
+  flare: FlareKey | null,
+): Promise<FlareKey | null> {
   const existing = await db
-    .select({ u: likes.userId })
+    .select({ flare: likes.flare })
     .from(likes)
-    .where(
-      and(eq(likes.userId, userId), eq(likes.entityType, entityType), eq(likes.entityId, entityId)),
-    )
+    .where(flareWhere(userId, entityType, entityId))
     .get();
 
-  if (existing) {
-    await db
-      .delete(likes)
-      .where(
-        and(
-          eq(likes.userId, userId),
-          eq(likes.entityType, entityType),
-          eq(likes.entityId, entityId),
-        ),
-      );
-    await bumpLikeCounter(db, entityType, entityId, -1);
-    return false;
+  if (flare === null) {
+    if (existing) {
+      await db.delete(likes).where(flareWhere(userId, entityType, entityId));
+      await bumpFlareCounter(db, entityType, entityId, -1);
+    }
+    return null;
   }
 
-  await db.insert(likes).values({ userId, entityType, entityId });
-  await bumpLikeCounter(db, entityType, entityId, 1);
-  return true;
+  if (existing) {
+    if (existing.flare !== flare) {
+      await db
+        .update(likes)
+        .set({ flare })
+        .where(flareWhere(userId, entityType, entityId));
+    }
+    return flare;
+  }
+
+  await db.insert(likes).values({ userId, entityType, entityId, flare });
+  await bumpFlareCounter(db, entityType, entityId, 1);
+  return flare;
 }
 
-export async function hasLiked(
+export async function getFlare(
   db: DB,
   userId: string,
   entityType: EntityType,
   entityId: string,
-): Promise<boolean> {
+): Promise<FlareKey | null> {
   const row = await db
-    .select({ u: likes.userId })
+    .select({ flare: likes.flare })
     .from(likes)
-    .where(
-      and(eq(likes.userId, userId), eq(likes.entityType, entityType), eq(likes.entityId, entityId)),
-    )
+    .where(flareWhere(userId, entityType, entityId))
     .get();
-  return !!row;
+  return row?.flare ?? null;
+}
+
+/** Per-flare tallies for an entity, e.g. { peak: 12, sob: 3 }. */
+export async function getFlareCounts(
+  db: DB,
+  entityType: EntityType,
+  entityId: string,
+): Promise<Record<string, number>> {
+  const rows = await db
+    .select({ flare: likes.flare, c: count() })
+    .from(likes)
+    .where(and(eq(likes.entityType, entityType), eq(likes.entityId, entityId)))
+    .groupBy(likes.flare);
+  return Object.fromEntries(rows.map((r) => [r.flare, r.c]));
 }
 
 /* ── Comments (one level of threading) ───────────────────────────────────── */

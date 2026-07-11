@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/misc";
 import { Poster } from "@/components/ui/poster";
 import { RatingSummary } from "@/components/ui/star-rating";
-import { LikeButton } from "@/components/interactions/like-button";
+import { FlareButton } from "@/components/interactions/flare-button";
 import { LogDialog } from "@/components/interactions/log-dialog";
 import { ReactionComposer } from "@/components/interactions/reaction-composer";
 import { SaveShelf } from "@/components/interactions/save-shelf";
@@ -204,10 +204,9 @@ export default async function WorkPage({
                         </p>
                         <p className="text-foreground/90 text-sm">{reaction.body}</p>
                         <div className="mt-1">
-                          <LikeButton
+                          <FlareButton
                             entityType="reaction"
                             entityId={reaction.id}
-                            initialLiked={false}
                             initialCount={reaction.likeCount}
                             authed={!!user}
                             path={path}
@@ -265,7 +264,6 @@ export default async function WorkPage({
                       createdAt: Math.floor(log.createdAt.getTime() / 1000),
                       user: ru,
                     }}
-                    liked={false}
                     authed={!!user}
                     path={path}
                   />

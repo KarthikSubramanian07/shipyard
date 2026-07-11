@@ -4,7 +4,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Poster } from "@/components/ui/poster";
 import { Stars } from "@/components/ui/star-rating";
-import { LikeButton } from "@/components/interactions/like-button";
+import { FlareButton } from "@/components/interactions/flare-button";
 import { ratingToStars } from "@/lib/rating";
 import { relativeTime } from "@/lib/utils";
 
@@ -62,10 +62,9 @@ export function FeedItemCard({ item, authed }: { item: FeedRow; authed: boolean 
               {log.reviewBody ? (
                 <p className="text-muted-foreground line-clamp-3 text-sm">{log.reviewBody}</p>
               ) : null}
-              <LikeButton
+              <FlareButton
                 entityType="log"
                 entityId={log.id}
-                initialLiked={false}
                 initialCount={log.likeCount}
                 authed={authed}
               />
@@ -76,10 +75,9 @@ export function FeedItemCard({ item, authed }: { item: FeedRow; authed: boolean 
         {activity.kind === "reaction" && reaction ? (
           <div className="space-y-1.5">
             <p className="text-foreground/90 text-sm">{reaction.body}</p>
-            <LikeButton
+            <FlareButton
               entityType="reaction"
               entityId={reaction.id}
-              initialLiked={false}
               initialCount={reaction.likeCount}
               authed={authed}
             />

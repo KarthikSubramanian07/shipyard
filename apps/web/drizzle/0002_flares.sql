@@ -1,0 +1,1 @@
+ALTER TABLE `likes` ADD `flare` text DEFAULT 'heart' NOT NULL;

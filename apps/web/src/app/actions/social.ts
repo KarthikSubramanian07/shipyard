@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/db";
-import type { EntityType } from "@/db/schema";
+import type { EntityType, FlareKey } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
-import { follow, toggleLike, unfollow } from "@/lib/services/social";
+import { follow, setFlare, unfollow } from "@/lib/services/social";
 import { isFollowing } from "@/lib/services/users";
 
 export async function toggleFollowAction(targetUserId: string): Promise<{ following: boolean }> {
@@ -17,14 +17,16 @@ export async function toggleFollowAction(targetUserId: string): Promise<{ follow
   return { following: !already };
 }
 
-export async function toggleLikeAction(
+/** Set, change, or clear (flare=null) the current user's flare on an entity. */
+export async function setFlareAction(
   entityType: EntityType,
   entityId: string,
+  flare: FlareKey | null,
   path?: string,
-): Promise<{ liked: boolean }> {
+): Promise<{ flare: FlareKey | null }> {
   const user = await getCurrentUser();
-  if (!user) return { liked: false };
-  const liked = await toggleLike(getDb(), user.id, entityType, entityId);
+  if (!user) return { flare: null };
+  const result = await setFlare(getDb(), user.id, entityType, entityId, flare);
   if (path) revalidatePath(path);
-  return { liked };
+  return { flare: result };
 }
