@@ -114,10 +114,12 @@ export default async function WorkPage({
           <LogDialog
             workId={work.id}
             workTitle={work.title}
+            workType={work.type}
             initial={
               userLog
                 ? {
-                    rating: userLog.rating,
+                    bucket: userLog.bucket,
+                    score: userLog.score,
                     reaction: userLog.reaction,
                     reviewBody: userLog.reviewBody,
                     hasSpoilers: userLog.hasSpoilers,
@@ -258,6 +260,7 @@ export default async function WorkPage({
                     review={{
                       id: log.id,
                       rating: log.rating,
+                      score: log.score,
                       reviewBody: log.reviewBody!,
                       hasSpoilers: log.hasSpoilers,
                       likeCount: log.likeCount,

@@ -1,6 +1,7 @@
-import { and, desc, eq, isNotNull } from "drizzle-orm";
+import { and, desc, eq, isNotNull, ne } from "drizzle-orm";
 import type { DB } from "@/db";
 import { logs, users, works, type Log } from "@/db/schema";
+import { scoreToRating, type Bucket } from "@/lib/gauntlet";
 import { newId } from "@/lib/id";
 import { recordActivity } from "./activity";
 
@@ -8,6 +9,8 @@ export interface LogInput {
   userId: string;
   workId: string;
   rating?: number | null;
+  bucket?: Bucket | null;
+  score?: number | null;
   reaction?: string | null;
   reviewBody?: string | null;
   hasSpoilers?: boolean;
@@ -22,8 +25,13 @@ export async function upsertLog(db: DB, input: LogInput): Promise<string> {
     .where(and(eq(logs.userId, input.userId), eq(logs.workId, input.workId)))
     .get();
 
+  // The Gauntlet score is the source of truth; mirror it to the int rating.
+  const derivedRating = input.score != null ? scoreToRating(input.score) : (input.rating ?? null);
+
   const values = {
-    rating: input.rating ?? null,
+    rating: derivedRating,
+    bucket: input.bucket ?? null,
+    score: input.score ?? null,
     reaction: input.reaction?.trim() || null,
     reviewBody: input.reviewBody?.trim() || null,
     hasSpoilers: input.hasSpoilers ?? false,
@@ -44,6 +52,39 @@ export async function upsertLog(db: DB, input: LogInput): Promise<string> {
     workId: input.workId,
   });
   return id;
+}
+
+/**
+ * A user's already-ranked works in a given medium + bucket, best first.
+ * Powers The Gauntlet's head-to-head comparisons (excludes the work being rated).
+ */
+export async function getRankedOpponents(
+  db: DB,
+  userId: string,
+  workType: "film" | "tv" | "book",
+  bucket: Bucket,
+  excludeWorkId: string,
+) {
+  return db
+    .select({
+      workId: works.id,
+      title: works.title,
+      posterUrl: works.posterUrl,
+      score: logs.score,
+    })
+    .from(logs)
+    .innerJoin(works, eq(logs.workId, works.id))
+    .where(
+      and(
+        eq(logs.userId, userId),
+        eq(logs.bucket, bucket),
+        eq(works.type, workType),
+        isNotNull(logs.score),
+        ne(logs.workId, excludeWorkId),
+      ),
+    )
+    .orderBy(desc(logs.score))
+    .limit(200);
 }
 
 export async function getUserLogForWork(

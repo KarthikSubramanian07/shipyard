@@ -3,6 +3,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Stars } from "@/components/ui/star-rating";
 import { FlareButton } from "@/components/interactions/flare-button";
+import { TierBadge } from "@/components/interactions/gauntlet-rating";
 import { SpoilerText } from "@/components/spoiler-text";
 import type { FlareKey } from "@/db/schema";
 import { ratingToStars } from "@/lib/rating";
@@ -11,6 +12,7 @@ import { relativeTime } from "@/lib/utils";
 export interface ReviewData {
   id: string;
   rating: number | null;
+  score: number | null;
   reviewBody: string;
   hasSpoilers: boolean;
   likeCount: number;
@@ -39,7 +41,10 @@ export function ReviewCard({
           </Link>
           <p className="text-muted-foreground text-xs">{relativeTime(review.createdAt * 1000)}</p>
         </div>
-        {review.rating != null ? <Stars stars={ratingToStars(review.rating)} size={15} /> : null}
+        <div className="flex items-center gap-2">
+          {review.score != null ? <TierBadge score={review.score} /> : null}
+          {review.rating != null ? <Stars stars={ratingToStars(review.rating)} size={15} /> : null}
+        </div>
       </div>
 
       {review.hasSpoilers ? (

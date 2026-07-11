@@ -5,80 +5,40 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { submitLog } from "@/app/actions/content";
 import { Button } from "@/components/ui/button";
+import type { WorkType } from "@/db/schema";
+import type { Bucket } from "@/lib/gauntlet";
+import { GauntletRating, type GauntletValue } from "./gauntlet-rating";
 
 interface InitialLog {
-  rating: number | null;
+  bucket: Bucket | null;
+  score: number | null;
   reaction: string | null;
   reviewBody: string | null;
   hasSpoilers: boolean;
 }
 
-/** Interactive half-star picker. `value` is the stored int (1..10). */
-function StarInput({
-  value,
-  onChange,
-}: {
-  value: number | null;
-  onChange: (v: number | null) => void;
-}) {
-  const [hover, setHover] = useState<number | null>(null);
-  const active = hover ?? value ?? 0;
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex" onMouseLeave={() => setHover(null)}>
-        {[0, 1, 2, 3, 4].map((i) => {
-          const leftVal = i * 2 + 1;
-          const rightVal = i * 2 + 2;
-          const fill = Math.max(0, Math.min(2, active - i * 2));
-          return (
-            <div key={i} className="relative">
-              <Star
-                className="text-muted-foreground/30 size-8"
-                fill={fill > 0 ? "var(--flare)" : "none"}
-                stroke="var(--flare)"
-                style={{ clipPath: fill === 1 ? "inset(0 50% 0 0)" : undefined }}
-              />
-              <button
-                type="button"
-                aria-label={`${(leftVal / 2).toFixed(1)} stars`}
-                className="absolute inset-y-0 left-0 w-1/2"
-                onMouseEnter={() => setHover(leftVal)}
-                onClick={() => onChange(value === leftVal ? null : leftVal)}
-              />
-              <button
-                type="button"
-                aria-label={`${(rightVal / 2).toFixed(1)} stars`}
-                className="absolute inset-y-0 right-0 w-1/2"
-                onMouseEnter={() => setHover(rightVal)}
-                onClick={() => onChange(value === rightVal ? null : rightVal)}
-              />
-            </div>
-          );
-        })}
-      </div>
-      <span className="text-muted-foreground w-10 text-sm font-medium tabular-nums">
-        {active > 0 ? (active / 2).toFixed(1) : "-"}
-      </span>
-    </div>
-  );
-}
-
 export function LogDialog({
   workId,
   workTitle,
+  workType,
   initial,
   triggerLabel = "Log or rate",
   triggerVariant = "primary",
 }: {
   workId: string;
   workTitle: string;
+  workType: WorkType;
   initial?: InitialLog | null;
   triggerLabel?: string;
   triggerVariant?: "primary" | "secondary";
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [rating, setRating] = useState<number | null>(initial?.rating ?? null);
+  const [gauntlet, setGauntlet] = useState<GauntletValue | null>(
+    initial?.bucket && initial?.score != null
+      ? { bucket: initial.bucket, score: initial.score }
+      : null,
+  );
   const [reaction, setReaction] = useState(initial?.reaction ?? "");
   const [reviewBody, setReviewBody] = useState(initial?.reviewBody ?? "");
   const [hasSpoilers, setHasSpoilers] = useState(initial?.hasSpoilers ?? false);
@@ -97,7 +57,10 @@ export function LogDialog({
   function save() {
     setError(null);
     const fd = new FormData();
-    if (rating != null) fd.set("rating", String(rating));
+    if (gauntlet) {
+      fd.set("bucket", gauntlet.bucket);
+      fd.set("score", String(gauntlet.score));
+    }
     if (reaction.trim()) fd.set("reaction", reaction.trim());
     if (showReview && reviewBody.trim()) fd.set("reviewBody", reviewBody.trim());
     if (hasSpoilers) fd.set("hasSpoilers", "on");
@@ -133,8 +96,14 @@ export function LogDialog({
 
             <div className="space-y-5 px-5 py-5">
               <div className="space-y-2">
-                <p className="text-sm font-medium">Your rating</p>
-                <StarInput value={rating} onChange={setRating} />
+                <p className="text-sm font-medium">Where does it stack up?</p>
+                <GauntletRating
+                  workId={workId}
+                  workTitle={workTitle}
+                  workType={workType}
+                  value={gauntlet}
+                  onChange={setGauntlet}
+                />
               </div>
 
               <div className="space-y-2">
