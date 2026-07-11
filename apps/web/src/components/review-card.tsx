@@ -5,7 +5,8 @@ import { Stars } from "@/components/ui/star-rating";
 import { FlareButton } from "@/components/interactions/flare-button";
 import { TierBadge } from "@/components/interactions/gauntlet-rating";
 import { SpoilerText } from "@/components/spoiler-text";
-import type { FlareKey } from "@/db/schema";
+import type { FlareKey, WorkType } from "@/db/schema";
+import { isAheadOfViewer, formatProgress } from "@/lib/progress";
 import { ratingToStars } from "@/lib/rating";
 import { relativeTime } from "@/lib/utils";
 
@@ -13,6 +14,7 @@ export interface ReviewData {
   id: string;
   rating: number | null;
   score: number | null;
+  spoilerUpTo: number | null;
   reviewBody: string;
   hasSpoilers: boolean;
   likeCount: number;
@@ -25,12 +27,17 @@ export function ReviewCard({
   flare = null,
   authed,
   path,
+  workType,
+  viewerProgress,
 }: {
   review: ReviewData;
   flare?: FlareKey | null;
   authed: boolean;
   path: string;
+  workType: WorkType;
+  viewerProgress?: number | null;
 }) {
+  const gated = isAheadOfViewer(review.spoilerUpTo, viewerProgress);
   return (
     <article className="border-border space-y-3 border-b pb-5 last:border-0">
       <div className="flex items-center gap-3">
@@ -52,7 +59,20 @@ export function ReviewCard({
           Spoiler-tagged
         </Badge>
       ) : null}
-      <SpoilerText text={review.reviewBody} className="text-foreground/90 text-sm" />
+      {gated ? (
+        <details className="border-flare/50 bg-flare-soft/30 group rounded-lg border border-dashed p-3">
+          <summary className="text-flare cursor-pointer text-sm font-medium">
+            Hidden: discusses up to {formatProgress(workType, review.spoilerUpTo!)}
+            {viewerProgress ? ` (you're on ${formatProgress(workType, viewerProgress)})` : ""}.
+            Reveal anyway
+          </summary>
+          <div className="mt-2">
+            <SpoilerText text={review.reviewBody} className="text-foreground/90 text-sm" />
+          </div>
+        </details>
+      ) : (
+        <SpoilerText text={review.reviewBody} className="text-foreground/90 text-sm" />
+      )}
 
       <FlareButton
         entityType="log"

@@ -11,6 +11,7 @@ export interface LogInput {
   rating?: number | null;
   bucket?: Bucket | null;
   score?: number | null;
+  spoilerUpTo?: number | null;
   reaction?: string | null;
   reviewBody?: string | null;
   hasSpoilers?: boolean;
@@ -32,6 +33,7 @@ export async function upsertLog(db: DB, input: LogInput): Promise<string> {
     rating: derivedRating,
     bucket: input.bucket ?? null,
     score: input.score ?? null,
+    spoilerUpTo: input.spoilerUpTo ?? null,
     reaction: input.reaction?.trim() || null,
     reviewBody: input.reviewBody?.trim() || null,
     hasSpoilers: input.hasSpoilers ?? false,

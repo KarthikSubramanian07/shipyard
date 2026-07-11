@@ -7,11 +7,13 @@ import { submitLog } from "@/app/actions/content";
 import { Button } from "@/components/ui/button";
 import type { WorkType } from "@/db/schema";
 import type { Bucket } from "@/lib/gauntlet";
+import { progressNoun } from "@/lib/progress";
 import { GauntletRating, type GauntletValue } from "./gauntlet-rating";
 
 interface InitialLog {
   bucket: Bucket | null;
   score: number | null;
+  spoilerUpTo: number | null;
   reaction: string | null;
   reviewBody: string | null;
   hasSpoilers: boolean;
@@ -40,6 +42,10 @@ export function LogDialog({
       : null,
   );
   const [reaction, setReaction] = useState(initial?.reaction ?? "");
+  const [spoilerUpTo, setSpoilerUpTo] = useState(
+    initial?.spoilerUpTo != null ? String(initial.spoilerUpTo) : "",
+  );
+  const spoilerNoun = progressNoun(workType);
   const [reviewBody, setReviewBody] = useState(initial?.reviewBody ?? "");
   const [hasSpoilers, setHasSpoilers] = useState(initial?.hasSpoilers ?? false);
   const [showReview, setShowReview] = useState(Boolean(initial?.reviewBody));
@@ -64,6 +70,7 @@ export function LogDialog({
     if (reaction.trim()) fd.set("reaction", reaction.trim());
     if (showReview && reviewBody.trim()) fd.set("reviewBody", reviewBody.trim());
     if (hasSpoilers) fd.set("hasSpoilers", "on");
+    if (showReview && spoilerUpTo && Number(spoilerUpTo) > 0) fd.set("spoilerUpTo", spoilerUpTo);
     start(async () => {
       const res = await submitLog(workId, fd);
       if (res.ok) {
@@ -145,6 +152,21 @@ export function LogDialog({
                     />
                     Contains spoilers
                   </label>
+                  {spoilerNoun ? (
+                    <label className="text-muted-foreground flex items-center gap-2 text-sm">
+                      Discusses up to {spoilerNoun.toLowerCase()}
+                      <input
+                        type="number"
+                        min={0}
+                        max={999}
+                        value={spoilerUpTo}
+                        onChange={(e) => setSpoilerUpTo(e.target.value)}
+                        placeholder="—"
+                        className="border-input bg-background focus-visible:ring-ring/40 h-8 w-16 rounded-lg border px-2 text-sm focus-visible:outline-none focus-visible:ring-2"
+                      />
+                      <span className="text-xs">(blurs for readers who aren&apos;t there yet)</span>
+                    </label>
+                  ) : null}
                 </div>
               ) : (
                 <button

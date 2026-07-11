@@ -10,6 +10,7 @@ import { getFicsForWork } from "@/lib/services/fics";
 import { getReviewsForWork, getUserLogForWork } from "@/lib/services/logs";
 import { getReactionsForWork } from "@/lib/services/reactions";
 import { getAlsoLiked } from "@/lib/services/feed";
+import { getProgress } from "@/lib/services/progress";
 import { getWorkShelfSlugs } from "@/lib/services/shelves";
 import { getWorkAggregate, getWorkBySlug } from "@/lib/services/works";
 import { FicCard } from "@/components/fic-card";
@@ -23,6 +24,7 @@ import { Poster } from "@/components/ui/poster";
 import { RatingSummary } from "@/components/ui/star-rating";
 import { FlareButton } from "@/components/interactions/flare-button";
 import { LogDialog } from "@/components/interactions/log-dialog";
+import { ProgressControl } from "@/components/interactions/progress-control";
 import { ReactionComposer } from "@/components/interactions/reaction-composer";
 import { SaveShelf } from "@/components/interactions/save-shelf";
 import { relativeTime } from "@/lib/utils";
@@ -72,15 +74,17 @@ export default async function WorkPage({
   const user = await getCurrentUser();
   const tab: Tab = tabParam === "reviews" || tabParam === "fanfic" ? tabParam : "overview";
 
-  const [agg, userLog, reviews, reactions, fics, alsoLiked, shelfSlugs] = await Promise.all([
-    getWorkAggregate(db, work.id),
-    user ? getUserLogForWork(db, user.id, work.id) : Promise.resolve(undefined),
-    getReviewsForWork(db, work.id, 20),
-    getReactionsForWork(db, work.id, 20),
-    getFicsForWork(db, work.id, 20),
-    getAlsoLiked(db, work.id, 8),
-    user ? getWorkShelfSlugs(db, user.id, work.id) : Promise.resolve<string[]>([]),
-  ]);
+  const [agg, userLog, reviews, reactions, fics, alsoLiked, shelfSlugs, viewerProgress] =
+    await Promise.all([
+      getWorkAggregate(db, work.id),
+      user ? getUserLogForWork(db, user.id, work.id) : Promise.resolve(undefined),
+      getReviewsForWork(db, work.id, 20),
+      getReactionsForWork(db, work.id, 20),
+      getFicsForWork(db, work.id, 20),
+      getAlsoLiked(db, work.id, 8),
+      user ? getWorkShelfSlugs(db, user.id, work.id) : Promise.resolve<string[]>([]),
+      user ? getProgress(db, user.id, work.id) : Promise.resolve<number | null>(null),
+    ]);
 
   const meta = (work.metadata ?? {}) as {
     genres?: string[];
@@ -120,6 +124,7 @@ export default async function WorkPage({
                 ? {
                     bucket: userLog.bucket,
                     score: userLog.score,
+                    spoilerUpTo: userLog.spoilerUpTo,
                     reaction: userLog.reaction,
                     reviewBody: userLog.reviewBody,
                     hasSpoilers: userLog.hasSpoilers,
@@ -134,6 +139,13 @@ export default async function WorkPage({
             initialInManifest={shelfSlugs.includes("want")}
             initialFavorite={shelfSlugs.includes("favorites")}
             authed={!!user}
+          />
+          <ProgressControl
+            workId={work.id}
+            workType={work.type}
+            initial={viewerProgress}
+            authed={!!user}
+            path={path}
           />
           <Button asChild variant="secondary" className="w-full">
             <Link href={`/write/${work.slug}`}>
@@ -261,6 +273,7 @@ export default async function WorkPage({
                       id: log.id,
                       rating: log.rating,
                       score: log.score,
+                      spoilerUpTo: log.spoilerUpTo,
                       reviewBody: log.reviewBody!,
                       hasSpoilers: log.hasSpoilers,
                       likeCount: log.likeCount,
@@ -269,6 +282,8 @@ export default async function WorkPage({
                     }}
                     authed={!!user}
                     path={path}
+                    workType={work.type}
+                    viewerProgress={viewerProgress}
                   />
                 ))
               )}

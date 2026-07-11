@@ -25,6 +25,7 @@ export async function submitLog(workId: string, formData: FormData): Promise<Act
     rating: formData.get("rating") || null,
     bucket: formData.get("bucket") || null,
     score: formData.get("score") || null,
+    spoilerUpTo: formData.get("spoilerUpTo") || null,
     reaction: formData.get("reaction") || undefined,
     reviewBody: formData.get("reviewBody") || undefined,
     hasSpoilers: formData.get("hasSpoilers") === "on",

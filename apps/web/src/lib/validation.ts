@@ -24,6 +24,7 @@ export const logSchema = z.object({
   rating: z.coerce.number().int().min(1).max(10).nullish(),
   bucket: z.enum(GAUNTLET_BUCKETS).nullish(),
   score: z.coerce.number().min(0).max(10).nullish(),
+  spoilerUpTo: z.coerce.number().int().min(1).max(999).nullish(),
   reaction: z.string().trim().max(280).optional(),
   reviewBody: z.string().trim().max(20_000).optional(),
   hasSpoilers: z.coerce.boolean().default(false),
