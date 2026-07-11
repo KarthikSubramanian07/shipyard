@@ -1,0 +1,39 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# builds
+.next/
+.open-next/
+out/
+dist/
+target/
+workers/og/build/
+*.tsbuildinfo
+
+# cloudflare / wrangler
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+
+# env
+.env
+.env.*
+!.env.example
+
+# local D1 / sqlite
+*.sqlite
+*.sqlite-*
+.d1/
+
+# logs & os
+*.log
+.DS_Store
+coverage/
+.turbo/
+.vercel/
+
+# editor
+.idea/
+*.swp

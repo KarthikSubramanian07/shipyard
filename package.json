@@ -1,0 +1,27 @@
+{
+  "name": "shipyard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Letterboxd for every story you've ever loved — and the ones you wish existed.",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @shipyard/web dev",
+    "build": "pnpm --filter @shipyard/web build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
+    "db:generate": "pnpm --filter @shipyard/web db:generate",
+    "db:migrate:local": "pnpm --filter @shipyard/web db:migrate:local",
+    "db:seed": "pnpm --filter @shipyard/web db:seed"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.11"
+  }
+}
