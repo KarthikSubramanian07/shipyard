@@ -16,6 +16,16 @@ import { slugify } from "@/lib/slug";
 
 export const dynamic = "force-dynamic";
 
+const OAUTH_STATE_COOKIE = "google_oauth_state";
+const OAUTH_VERIFIER_COOKIE = "google_code_verifier";
+
+function clearOAuthCookies(
+  store: Awaited<ReturnType<typeof cookies>>,
+): void {
+  store.set(OAUTH_STATE_COOKIE, "", { path: "/", maxAge: 0 });
+  store.set(OAUTH_VERIFIER_COOKIE, "", { path: "/", maxAge: 0 });
+}
+
 async function uniqueUsername(db: DB, seed: string): Promise<string> {
   const base = (slugify(seed).replace(/-/g, "_").slice(0, 16) || "fan").replace(/^_+|_+$/g, "");
   if (!(await getUserByUsername(db, base))) return base;
@@ -36,37 +46,53 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const store = await cookies();
-  const storedState = store.get("google_oauth_state")?.value;
-  const codeVerifier = store.get("google_code_verifier")?.value;
+  const storedState = store.get(OAUTH_STATE_COOKIE)?.value;
+  const codeVerifier = store.get(OAUTH_VERIFIER_COOKIE)?.value;
+
+  const fail = (error: string) => {
+    clearOAuthCookies(store);
+    loginUrl.searchParams.set("error", error);
+    return NextResponse.redirect(loginUrl);
+  };
 
   if (!code || !state || !storedState || !codeVerifier || state !== storedState) {
-    loginUrl.searchParams.set("error", "oauth");
-    return NextResponse.redirect(loginUrl);
+    return fail("oauth");
   }
 
   let tokens: OAuth2Tokens;
   try {
     tokens = await google.validateAuthorizationCode(code, codeVerifier);
   } catch {
-    loginUrl.searchParams.set("error", "oauth");
-    return NextResponse.redirect(loginUrl);
+    return fail("oauth");
   }
 
   const claims = decodeIdToken(tokens.idToken()) as GoogleClaims;
+  // Refuse unverified Google emails so an attacker cannot squat via a fake inbox.
+  if (!claims.email || claims.email_verified !== true) {
+    return fail("oauth_email");
+  }
+
   const db = getDb();
 
+  // Only match by googleId. Never auto-login by email alone — that lets an
+  // attacker who registered the victim's email with a password hijack the
+  // real Google user's session (and keeps password access).
   let user = await getUserByGoogleId(db, claims.sub);
-  if (!user && claims.email) user = await getUserByEmail(db, claims.email);
   if (!user) {
-    const username = await uniqueUsername(db, claims.name ?? claims.email?.split("@")[0] ?? "fan");
+    const existing = await getUserByEmail(db, claims.email);
+    if (existing) {
+      return fail("oauth_link");
+    }
+    const username = await uniqueUsername(db, claims.name ?? claims.email.split("@")[0] ?? "fan");
     user = await createUser(db, {
       username,
-      email: claims.email ?? `${claims.sub}@google.local`,
+      email: claims.email,
       displayName: claims.name ?? username,
       googleId: claims.sub,
     });
   }
 
+  clearOAuthCookies(store);
   const token = generateSessionToken();
   const session = await createSession(db, token, user.id);
   await setSessionCookie(token, session.expiresAt);

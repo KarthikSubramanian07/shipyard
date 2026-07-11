@@ -11,8 +11,19 @@ import { Logo } from "@/components/ui/logo";
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const action = mode === "login" ? login : signup;
   const [state, formAction, pending] = useActionState<AuthState, FormData>(action, {});
-  const next = useSearchParams().get("next") ?? "";
+  const params = useSearchParams();
+  const next = params.get("next") ?? "";
+  const oauthError = params.get("error");
   const isLogin = mode === "login";
+
+  const oauthMessage =
+    oauthError === "oauth_link"
+      ? "An account with that email already exists. Log in with your password first."
+      : oauthError === "oauth_email"
+        ? "Google did not provide a verified email. Try email/password signup."
+        : oauthError === "oauth"
+          ? "Google sign-in failed. Please try again."
+          : null;
 
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-12">
@@ -69,6 +80,8 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             required
           />
         </div>
+
+        {oauthMessage ? <p className="text-destructive mb-4 text-sm">{oauthMessage}</p> : null}
 
         {state?.error ? <p className="text-destructive text-sm">{state.error}</p> : null}
 
