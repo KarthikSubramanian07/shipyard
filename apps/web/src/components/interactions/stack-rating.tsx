@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { getOpponentsAction, type Opponent } from "@/app/actions/gauntlet";
+import { getOpponentsAction, type Opponent } from "@/app/actions/stack";
 import type { WorkType } from "@/db/schema";
-import { BUCKET_META, scoreForInsertion, tierForScore, type Bucket } from "@/lib/gauntlet";
+import { BUCKET_META, scoreForInsertion, tierForScore, type Bucket } from "@/lib/stack";
 import { cn } from "@/lib/utils";
 
-export interface GauntletValue {
+export interface StackValue {
   bucket: Bucket;
   score: number;
 }
@@ -19,8 +19,8 @@ const BUCKET_STYLE: Record<Bucket, string> = {
   nope: "border-border hover:bg-muted data-[on=true]:bg-muted-foreground data-[on=true]:text-background",
 };
 
-/** The Gauntlet: pick a bucket, then rank via head-to-heads. Controlled. */
-export function GauntletRating({
+/** The Stack: pick a bucket, then rank via head-to-heads. Controlled. */
+export function StackRating({
   workId,
   workTitle,
   workType,
@@ -30,8 +30,8 @@ export function GauntletRating({
   workId: string;
   workTitle: string;
   workType: WorkType;
-  value: GauntletValue | null;
-  onChange: (v: GauntletValue | null) => void;
+  value: StackValue | null;
+  onChange: (v: StackValue | null) => void;
 }) {
   const [phase, setPhase] = useState<"pick" | "compare">("pick");
   const [bucket, setBucket] = useState<Bucket | null>(value?.bucket ?? null);

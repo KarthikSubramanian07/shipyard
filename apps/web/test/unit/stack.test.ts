@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { scoreForInsertion, scoreToRating, tierForScore } from "@/lib/gauntlet";
+import { scoreForInsertion, scoreToRating, tierForScore } from "@/lib/stack";
 
 describe("tierForScore", () => {
   it("maps scores to tiers", () => {

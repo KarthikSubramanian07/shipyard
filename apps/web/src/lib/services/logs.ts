@@ -1,7 +1,7 @@
-import { and, desc, eq, isNotNull, ne } from "drizzle-orm";
+import { and, count, desc, eq, isNotNull, ne } from "drizzle-orm";
 import type { DB } from "@/db";
 import { logs, users, works, type Log } from "@/db/schema";
-import { scoreToRating, type Bucket } from "@/lib/gauntlet";
+import { scoreToRating, type Bucket } from "@/lib/stack";
 import { newId } from "@/lib/id";
 import { recordActivity } from "./activity";
 
@@ -26,7 +26,7 @@ export async function upsertLog(db: DB, input: LogInput): Promise<string> {
     .where(and(eq(logs.userId, input.userId), eq(logs.workId, input.workId)))
     .get();
 
-  // The Gauntlet score is the source of truth; mirror it to the int rating.
+  // The Stack score is the source of truth; mirror it to the int rating.
   const derivedRating = input.score != null ? scoreToRating(input.score) : (input.rating ?? null);
 
   const values = {
@@ -58,7 +58,7 @@ export async function upsertLog(db: DB, input: LogInput): Promise<string> {
 
 /**
  * A user's already-ranked works in a given medium + bucket, best first.
- * Powers The Gauntlet's head-to-head comparisons (excludes the work being rated).
+ * Powers The Stack's head-to-head comparisons (excludes the work being rated).
  */
 export async function getRankedOpponents(
   db: DB,
@@ -87,6 +87,20 @@ export async function getRankedOpponents(
     )
     .orderBy(desc(logs.score))
     .limit(200);
+}
+
+/** Distribution of a user's ratings across the 10 half-star buckets (1..10). */
+export async function getRatingHistogram(db: DB, userId: string): Promise<number[]> {
+  const rows = await db
+    .select({ rating: logs.rating, c: count() })
+    .from(logs)
+    .where(and(eq(logs.userId, userId), isNotNull(logs.rating)))
+    .groupBy(logs.rating);
+  const buckets = Array<number>(10).fill(0);
+  for (const r of rows) {
+    if (r.rating != null && r.rating >= 1 && r.rating <= 10) buckets[r.rating - 1] = r.c;
+  }
+  return buckets;
 }
 
 export async function getUserLogForWork(

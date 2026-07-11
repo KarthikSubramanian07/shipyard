@@ -3,7 +3,7 @@
 import { getDb } from "@/db";
 import type { WorkType } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
-import type { Bucket } from "@/lib/gauntlet";
+import type { Bucket } from "@/lib/stack";
 import { getRankedOpponents } from "@/lib/services/logs";
 
 export interface Opponent {

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FIC_CANON, FIC_RATINGS, FIC_TYPES, GAUNTLET_BUCKETS, WORK_SOURCES } from "@/db/schema";
+import { FIC_CANON, FIC_RATINGS, FIC_TYPES, STACK_BUCKETS, WORK_SOURCES } from "@/db/schema";
 
 export const usernameSchema = z
   .string()
@@ -22,7 +22,7 @@ export const loginSchema = z.object({
 
 export const logSchema = z.object({
   rating: z.coerce.number().int().min(1).max(10).nullish(),
-  bucket: z.enum(GAUNTLET_BUCKETS).nullish(),
+  bucket: z.enum(STACK_BUCKETS).nullish(),
   score: z.coerce.number().min(0).max(10).nullish(),
   spoilerUpTo: z.coerce.number().int().min(1).max(999).nullish(),
   reaction: z.string().trim().max(280).optional(),

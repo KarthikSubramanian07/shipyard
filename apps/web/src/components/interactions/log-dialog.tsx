@@ -6,9 +6,9 @@ import { useEffect, useState, useTransition } from "react";
 import { submitLog } from "@/app/actions/content";
 import { Button } from "@/components/ui/button";
 import type { WorkType } from "@/db/schema";
-import type { Bucket } from "@/lib/gauntlet";
+import type { Bucket } from "@/lib/stack";
 import { progressNoun } from "@/lib/progress";
-import { GauntletRating, type GauntletValue } from "./gauntlet-rating";
+import { StackRating, type StackValue } from "./stack-rating";
 
 interface InitialLog {
   bucket: Bucket | null;
@@ -36,7 +36,7 @@ export function LogDialog({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [gauntlet, setGauntlet] = useState<GauntletValue | null>(
+  const [stack, setStack] = useState<StackValue | null>(
     initial?.bucket && initial?.score != null
       ? { bucket: initial.bucket, score: initial.score }
       : null,
@@ -63,9 +63,9 @@ export function LogDialog({
   function save() {
     setError(null);
     const fd = new FormData();
-    if (gauntlet) {
-      fd.set("bucket", gauntlet.bucket);
-      fd.set("score", String(gauntlet.score));
+    if (stack) {
+      fd.set("bucket", stack.bucket);
+      fd.set("score", String(stack.score));
     }
     if (reaction.trim()) fd.set("reaction", reaction.trim());
     if (showReview && reviewBody.trim()) fd.set("reviewBody", reviewBody.trim());
@@ -104,12 +104,12 @@ export function LogDialog({
             <div className="space-y-5 px-5 py-5">
               <div className="space-y-2">
                 <p className="text-sm font-medium">Where does it stack up?</p>
-                <GauntletRating
+                <StackRating
                   workId={workId}
                   workTitle={workTitle}
                   workType={workType}
-                  value={gauntlet}
-                  onChange={setGauntlet}
+                  value={stack}
+                  onChange={setStack}
                 />
               </div>
 

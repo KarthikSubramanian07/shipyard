@@ -29,8 +29,8 @@ export const ENTITY_TYPES = ["log", "fic", "list", "reaction", "comment"] as con
 // Flares: expressive fandom reactions (one per user per entity, changeable).
 export const FLARE_KEYS = ["heart", "peak", "sob", "mind", "more", "lol"] as const;
 export type FlareKey = (typeof FLARE_KEYS)[number];
-// The Gauntlet: triage buckets for the pairwise rating system.
-export const GAUNTLET_BUCKETS = ["loved", "fine", "nope"] as const;
+// The Stack: triage buckets for the pairwise rating system.
+export const STACK_BUCKETS = ["loved", "fine", "nope"] as const;
 export const SHELF_SLUGS = ["watched", "reading", "want", "favorites"] as const;
 export const NOTIFICATION_TYPES = ["follow", "like", "comment", "kudos", "chapter"] as const;
 export const ACTIVITY_KINDS = ["log", "review", "fic", "list", "reaction"] as const;
@@ -124,10 +124,10 @@ export const logs = sqliteTable(
       .notNull()
       .references(() => works.id, { onDelete: "cascade" }),
     // Half-star rating stored as an integer 1..10 (i.e. stars * 2). Null = unrated.
-    // Derived from the Gauntlet score; kept for aggregates + legacy display.
+    // Derived from the Stack score; kept for aggregates + legacy display.
     rating: integer("rating"),
-    // The Gauntlet: triage bucket + derived 0-10 score (finer than `rating`).
-    bucket: text("bucket", { enum: GAUNTLET_BUCKETS }),
+    // The Stack: triage bucket + derived 0-10 score (finer than `rating`).
+    bucket: text("bucket", { enum: STACK_BUCKETS }),
     score: real("score"),
     // Progress-aware spoilers: this review discusses events up to this position
     // (season / chapter / part, per the work's medium). Null = no ahead-spoilers.

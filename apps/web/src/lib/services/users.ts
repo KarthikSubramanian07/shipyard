@@ -57,6 +57,8 @@ export interface ProfileStats {
   tv: number;
   books: number;
   fics: number;
+  wordsWritten: number;
+  kudosReceived: number;
   followers: number;
   following: number;
 }
@@ -71,7 +73,15 @@ export async function getProfileStats(db: DB, userId: string): Promise<ProfileSt
 
   const typeCount = (t: string) => byType.find((r) => r.type === t)?.c ?? 0;
 
-  const ficCount = await db.select({ c: count() }).from(fics).where(eq(fics.userId, userId)).get();
+  const ficAgg = await db
+    .select({
+      c: count(),
+      words: sql<number | null>`sum(${fics.wordCount})`,
+      kudos: sql<number | null>`sum(${fics.kudosCount})`,
+    })
+    .from(fics)
+    .where(eq(fics.userId, userId))
+    .get();
 
   const followerCount = await db
     .select({ c: count() })
@@ -89,7 +99,9 @@ export async function getProfileStats(db: DB, userId: string): Promise<ProfileSt
     films: typeCount("film"),
     tv: typeCount("tv"),
     books: typeCount("book"),
-    fics: ficCount?.c ?? 0,
+    fics: ficAgg?.c ?? 0,
+    wordsWritten: ficAgg?.words ?? 0,
+    kudosReceived: ficAgg?.kudos ?? 0,
     followers: followerCount?.c ?? 0,
     following: followingCount?.c ?? 0,
   };

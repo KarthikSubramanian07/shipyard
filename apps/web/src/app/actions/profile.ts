@@ -19,6 +19,8 @@ export async function markNotificationsRead(): Promise<void> {
 const profileSchema = z.object({
   displayName: z.string().trim().min(1, "Name can't be empty").max(50),
   bio: z.string().trim().max(500).optional(),
+  pronouns: z.string().trim().max(40).optional(),
+  location: z.string().trim().max(80).optional(),
 });
 
 export interface ProfileState {
@@ -36,12 +38,19 @@ export async function updateProfile(
   const parsed = profileSchema.safeParse({
     displayName: formData.get("displayName"),
     bio: formData.get("bio") || undefined,
+    pronouns: formData.get("pronouns") || undefined,
+    location: formData.get("location") || undefined,
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
 
   await getDb()
     .update(users)
-    .set({ displayName: parsed.data.displayName, bio: parsed.data.bio ?? null })
+    .set({
+      displayName: parsed.data.displayName,
+      bio: parsed.data.bio ?? null,
+      pronouns: parsed.data.pronouns ?? null,
+      location: parsed.data.location ?? null,
+    })
     .where(eq(users.id, user.id));
   revalidatePath(`/u/${user.username}`);
   return { ok: true };

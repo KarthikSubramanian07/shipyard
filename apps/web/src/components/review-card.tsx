@@ -3,7 +3,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Stars } from "@/components/ui/star-rating";
 import { FlareButton } from "@/components/interactions/flare-button";
-import { TierBadge } from "@/components/interactions/gauntlet-rating";
+import { TierBadge } from "@/components/interactions/stack-rating";
 import { SpoilerText } from "@/components/spoiler-text";
 import type { FlareKey, WorkType } from "@/db/schema";
 import { isAheadOfViewer, formatProgress } from "@/lib/progress";

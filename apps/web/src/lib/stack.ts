@@ -1,12 +1,12 @@
 /**
- * The Gauntlet - Shipyard's rating system. You triage into a bucket, then quick
+ * The Stack - Shipyard's rating system. You triage into a bucket, then quick
  * head-to-head comparisons rank a title within that bucket. A 0-10 score is
  * derived (and mirrored to logs.rating for aggregates), surfaced as an S-F tier.
  */
 
-import { GAUNTLET_BUCKETS } from "@/db/schema";
+import { STACK_BUCKETS } from "@/db/schema";
 
-export const BUCKETS = GAUNTLET_BUCKETS;
+export const BUCKETS = STACK_BUCKETS;
 export type Bucket = (typeof BUCKETS)[number];
 
 export const BUCKET_META: Record<Bucket, { label: string; band: [number, number] }> = {
@@ -47,7 +47,7 @@ export function scoreForInsertion(
   return Math.min(hi, Math.max(lo, Math.round(score * 10) / 10));
 }
 
-/** Mirror a 0-10 Gauntlet score to the stored int rating (1-10, = stars*2). */
+/** Mirror a 0-10 Stack score to the stored int rating (1-10, = stars*2). */
 export function scoreToRating(score: number): number {
   return Math.min(10, Math.max(1, Math.round(score)));
 }

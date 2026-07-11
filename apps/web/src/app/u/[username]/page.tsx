@@ -1,4 +1,4 @@
-import { BookMarked, Film, PenLine } from "lucide-react";
+import { BookMarked, Film, MapPin, PenLine, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,14 +7,16 @@ import { getCurrentUser } from "@/lib/auth";
 import { ratingToStars } from "@/lib/rating";
 import { getUserFics } from "@/lib/services/fics";
 import { getUserLists } from "@/lib/services/lists";
-import { getUserLogs } from "@/lib/services/logs";
+import { getRatingHistogram, getUserLogs } from "@/lib/services/logs";
 import { getShelfWorks } from "@/lib/services/shelves";
 import { getProfileStats, getUserByUsername, isFollowing } from "@/lib/services/users";
 import { FicCard } from "@/components/fic-card";
+import { RatingHistogram } from "@/components/rating-histogram";
 import { WorkCard } from "@/components/work-card";
 import { Avatar } from "@/components/ui/avatar";
 import { EmptyState } from "@/components/ui/misc";
 import { FollowButton } from "@/components/interactions/follow-button";
+import { formatCount } from "@/lib/utils";
 
 export async function generateMetadata({
   params,
@@ -39,8 +41,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
   const viewer = await getCurrentUser();
   const isSelf = viewer?.id === profile.id;
 
-  const [stats, logs, fics, lists, favorites, watched, following] = await Promise.all([
+  const [stats, histogram, logs, fics, lists, favorites, watched, following] = await Promise.all([
     getProfileStats(db, profile.id),
+    getRatingHistogram(db, profile.id),
     getUserLogs(db, profile.id, 18),
     getUserFics(db, profile.id, 6),
     getUserLists(db, profile.id, 6),
@@ -49,14 +52,36 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
     viewer && !isSelf ? isFollowing(db, viewer.id, profile.id) : Promise.resolve(false),
   ]);
 
+  const bannerSrc = profile.bannerKey ? `/api/banners/${profile.bannerKey}` : null;
+
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
+    <div className="mx-auto max-w-5xl px-4 pb-8">
+      {/* Banner */}
+      <div className="relative -mx-4 h-36 overflow-hidden sm:h-48 sm:rounded-b-2xl">
+        {bannerSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={bannerSrc} alt="" className="h-full w-full object-cover" />
+        ) : (
+          <div className="bg-flare-wash bg-grain h-full w-full" />
+        )}
+      </div>
+
       {/* Header */}
-      <header className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-        <Avatar user={profile} size="xl" />
+      <header className="-mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-end">
+        <div className="ring-background rounded-full ring-4">
+          <Avatar user={profile} size="xl" />
+        </div>
         <div className="flex-1">
           <h1 className="font-display text-2xl font-semibold">{profile.displayName}</h1>
-          <p className="text-muted-foreground text-sm">@{profile.username}</p>
+          <p className="text-muted-foreground flex flex-wrap items-center gap-x-2 text-sm">
+            <span>@{profile.username}</span>
+            {profile.pronouns ? <span>· {profile.pronouns}</span> : null}
+            {profile.location ? (
+              <span className="inline-flex items-center gap-0.5">
+                · <MapPin className="size-3" /> {profile.location}
+              </span>
+            ) : null}
+          </p>
           {profile.bio ? (
             <p className="text-foreground/90 mt-2 max-w-xl text-sm">{profile.bio}</p>
           ) : null}
@@ -66,23 +91,31 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
         ) : null}
       </header>
 
-      {/* Stats */}
+      {/* The headline no competitor can show: watched + wrote + earned. */}
       <div className="border-border mt-6 flex flex-wrap gap-x-8 gap-y-2 border-y py-4 text-sm">
         <Stat n={stats.films + stats.tv} label="watched" />
         <Stat n={stats.books} label="read" />
-        <Stat n={stats.fics} label="fics" />
+        <Stat n={stats.fics} label="fics written" />
+        {stats.wordsWritten > 0 ? (
+          <StatText value={`${formatCount(stats.wordsWritten)} words`} />
+        ) : null}
+        {stats.kudosReceived > 0 ? (
+          <StatText value={`${formatCount(stats.kudosReceived)} kudos`} icon={Sparkles} />
+        ) : null}
         <Stat n={stats.followers} label="followers" />
         <Stat n={stats.following} label="following" />
       </div>
 
       <div className="mt-8 space-y-12">
+        <RatingHistogram buckets={histogram} />
+
         {favorites.length > 0 && (
           <Section title="Favorites" icon={BookMarked}>
             <WorkGrid items={favorites.map((f) => f.work)} />
           </Section>
         )}
 
-        <Section title="Recent activity" icon={Film}>
+        <Section title="Logbook" icon={Film}>
           {logs.length === 0 ? (
             <EmptyState
               icon={Film}
@@ -125,7 +158,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
         )}
 
         {lists.length > 0 && (
-          <Section title="Lists" icon={BookMarked}>
+          <Section title="Fleets" icon={BookMarked}>
             <ul className="space-y-2">
               {lists.map((l) => (
                 <li key={l.id}>
@@ -157,6 +190,21 @@ function Stat({ n, label }: { n: number; label: string }) {
     <div>
       <span className="font-display text-xl font-semibold">{n.toLocaleString()}</span>{" "}
       <span className="text-muted-foreground">{label}</span>
+    </div>
+  );
+}
+
+function StatText({
+  value,
+  icon: Icon,
+}: {
+  value: string;
+  icon?: React.ComponentType<{ className?: string }>;
+}) {
+  return (
+    <div className="font-display inline-flex items-center gap-1 text-xl font-semibold">
+      {Icon ? <Icon className="text-verdigris size-4" /> : null}
+      {value}
     </div>
   );
 }

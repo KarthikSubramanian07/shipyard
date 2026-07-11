@@ -5,7 +5,17 @@ import { updateProfile, type ProfileState } from "@/app/actions/profile";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 
-export function SettingsForm({ displayName, bio }: { displayName: string; bio: string }) {
+export function SettingsForm({
+  displayName,
+  bio,
+  pronouns,
+  location,
+}: {
+  displayName: string;
+  bio: string;
+  pronouns: string;
+  location: string;
+}) {
   const [state, action, pending] = useActionState<ProfileState, FormData>(updateProfile, {});
   return (
     <form action={action} className="max-w-md space-y-4">
@@ -18,6 +28,28 @@ export function SettingsForm({ displayName, bio }: { displayName: string; bio: s
           maxLength={50}
           required
         />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-1.5">
+          <Label htmlFor="pronouns">Pronouns</Label>
+          <Input
+            id="pronouns"
+            name="pronouns"
+            defaultValue={pronouns}
+            maxLength={40}
+            placeholder="she/her"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="location">Location</Label>
+          <Input
+            id="location"
+            name="location"
+            defaultValue={location}
+            maxLength={80}
+            placeholder="the void"
+          />
+        </div>
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="bio">Bio</Label>

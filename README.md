@@ -35,12 +35,14 @@ On Letterboxd the review *is* the creative act. On Shipyard, the review is the *
 ## Features
 
 - **Unified search** across films/TV (TMDB) and books (Open Library) with instant typeahead - works are imported lazily, only when someone actually logs one.
-- **The log dialog** - half-star ratings, a one-line reaction, an optional full markdown review, spoiler tags. Fast.
-- **Inline spoilers** - wrap anything in `>!like this!<` for a tap-to-reveal redaction bar, in reviews, comments, and fanfic. No more all-or-nothing hidden reviews.
+- **Rate by ranking, not stars** - pick a bucket (*Loved it / Fine / Not for me*), then a few "which did you like more?" head-to-heads slot it into your personal canon and derive an S-F tier. A number still falls out the back for aggregates.
+- **Flares** - expressive reactions instead of a plain like: 🔥 peak · 😭 wrecked me · 🤯 mindbender · 👀 need more · 💛 adored · 😂 funny. One per person, changeable, with live counts.
+- **Inline + progress-aware spoilers** - wrap anything in `>!like this!<` for a tap-to-reveal bar; and reviews that discuss "up to Season 3" stay blurred until *you're* there (set how far you are on any show/book).
 - **Work pages** built for SEO and sharing - poster, backdrop banner, overview, reviews, fanfic, and "fans also loved" (taste-overlap discovery, pure SQL).
 - **The fanfic moat** - a clean, iA-Writer-style editor. Types, ratings, canon-compliance, tone tags, pairings, chapters, kudos, and WIP subscriptions.
-- **The Manifest** - save films/shows/books to your watchlist/readlist, plus a Favorites shelf, from any work. Shelves: Watched / Reading / Want / Favorites.
-- **Social** - asymmetric follows, a real activity feed, likes, one-level threaded comments, notifications.
+- **The Manifest** - save films/shows/books to your watchlist/readlist, plus a Favorites shelf, from any work.
+- **Profiles that flex** - a cover banner, the *watched / wrote N words / earned N kudos* headline no competitor can show, a ratings histogram, your Logbook, and your Fleets (curated lists).
+- **Social** - asymmetric follows, a real activity feed, one-level threaded comments, notifications.
 - **Share cards** - every work, review, and fic gets a beautiful 1200×630 Open Graph image rendered by a **Rust → WASM Cloudflare Worker**. Every share is an ad.
 - **Auth** - email + password (native `node:crypto` scrypt) and Google OAuth (PKCE). Sessions use the hash-the-token pattern; a DB leak leaks nothing usable.
 - **Dark + light** warm, hand-tuned themes. No AI-slop gradients.
