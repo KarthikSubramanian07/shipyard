@@ -162,7 +162,6 @@ export default async function FicPage({ params }: { params: Promise<{ slug: stri
         <CommentSection
           entityType="fic"
           entityId={fic.id}
-          ownerId={fic.userId}
           path={`/fic/${fic.slug}`}
           comments={comments}
           authed={!!viewer}

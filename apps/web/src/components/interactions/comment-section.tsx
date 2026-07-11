@@ -21,14 +21,12 @@ export interface CommentView {
 export function CommentSection({
   entityType,
   entityId,
-  ownerId,
   path,
   comments,
   authed,
 }: {
   entityType: EntityType;
   entityId: string;
-  ownerId: string | null;
   path: string;
   comments: CommentView[];
   authed: boolean;
@@ -52,7 +50,7 @@ export function CommentSection({
     const fd = new FormData();
     fd.set("body", body.trim());
     start(async () => {
-      const res = await submitComment(entityType, entityId, ownerId, path, fd);
+      const res = await submitComment(entityType, entityId, path, fd);
       if (res.ok) {
         setBody("");
         router.refresh();
