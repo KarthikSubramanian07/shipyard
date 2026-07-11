@@ -1,8 +1,8 @@
 name: Deploy
 
 # Deploys to Cloudflare on push to main. Requires repository secrets:
-#   CLOUDFLARE_API_TOKEN   – token with Workers Scripts + D1 + R2 edit
-#   CLOUDFLARE_ACCOUNT_ID  – your account id
+#   CLOUDFLARE_API_TOKEN   - token with Workers Scripts + D1 + R2 edit
+#   CLOUDFLARE_ACCOUNT_ID  - your account id
 # And a wrangler.jsonc with real D1/R2 ids (see docs/DEPLOY.md).
 # Runs are skipped automatically when CLOUDFLARE_API_TOKEN isn't set.
 
@@ -25,11 +25,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Guard — require Cloudflare token
+      - name: Guard - require Cloudflare token
         id: guard
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "No CLOUDFLARE_API_TOKEN set — skipping deploy."
+            echo "No CLOUDFLARE_API_TOKEN set - skipping deploy."
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -67,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Guard — require Cloudflare token
+      - name: Guard - require Cloudflare token
         id: guard
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then

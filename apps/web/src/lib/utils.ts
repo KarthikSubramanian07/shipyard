@@ -30,7 +30,7 @@ const RELATIVE_UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
   ["minute", 60],
 ];
 
-/** "3 days ago", "just now" — deterministic given an explicit `now`. */
+/** "3 days ago", "just now" - deterministic given an explicit `now`. */
 export function relativeTime(date: Date | number, now: Date | number = Date.now()): string {
   const then = typeof date === "number" ? date : date.getTime();
   const ref = typeof now === "number" ? now : now.getTime();
@@ -49,7 +49,7 @@ export function formatDate(date: Date | number): string {
   return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 }
 
-/** Count words in prose — used for fic length classification. */
+/** Count words in prose - used for fic length classification. */
 export function wordCount(text: string): number {
   const trimmed = text.trim();
   if (!trimmed) return 0;
@@ -59,7 +59,7 @@ export function wordCount(text: string): number {
 export const FIC_LENGTHS = ["flash", "short", "long"] as const;
 export type FicLength = (typeof FIC_LENGTHS)[number];
 
-/** flash (<1k) / short (1k–10k) / long (10k+) per the spec. */
+/** flash (<1k) / short (1k-10k) / long (10k+) per the spec. */
 export function ficLength(words: number): FicLength {
   if (words < 1000) return "flash";
   if (words < 10_000) return "short";

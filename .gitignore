@@ -21,6 +21,8 @@ workers/og/build/
 .env
 .env.*
 !.env.example
+!.env.production
+
 
 # local D1 / sqlite
 *.sqlite

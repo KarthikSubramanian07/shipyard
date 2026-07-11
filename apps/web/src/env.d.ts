@@ -2,11 +2,11 @@
 // Keep in sync with wrangler.jsonc. (Can be regenerated with `pnpm cf-typegen`.)
 declare global {
   interface CloudflareEnv {
-    /** D1 (SQLite) — primary datastore. */
+    /** D1 (SQLite) - primary datastore. */
     DB: D1Database;
-    /** R2 — user-uploaded avatars. Present only once R2 is enabled. */
+    /** R2 - user-uploaded avatars. Present only once R2 is enabled. */
     MEDIA?: R2Bucket;
-    /** R2 — OpenNext incremental (ISR/SSG) cache. Optional. */
+    /** R2 - OpenNext incremental (ISR/SSG) cache. Optional. */
     NEXT_INC_CACHE_R2_BUCKET?: R2Bucket;
     /** Static assets fetcher (OpenNext). */
     ASSETS: Fetcher;

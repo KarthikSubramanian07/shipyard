@@ -2,7 +2,7 @@
   "name": "shipyard",
   "version": "0.1.0",
   "private": true,
-  "description": "Letterboxd for every story you've ever loved — and the ones you wish existed.",
+  "description": "Letterboxd for every story you've ever loved - and the ones you wish existed.",
   "license": "MIT",
   "packageManager": "pnpm@9.15.9",
   "engines": {

@@ -1,7 +1,7 @@
 # shipyard-og
 
 A production Cloudflare Worker (Rust → WebAssembly) that renders **Open Graph
-share-card PNGs** for [Shipyard](https://tryclear.app) — a media-tracking +
+share-card PNGs** for [Shipyard](https://tryclear.app) - a media-tracking +
 fanfic social platform. Every share is an ad, so the cards are designed to be
 handsome marketing collateral, not generic auto-generated boxes.
 
@@ -13,7 +13,7 @@ GET /og?type=<log|fic|review|list|work>
        &subtitle=<optional>
        &meta=<optional>
        &rating=<0-10 half-star integer, optional>
-       &poster=<url, optional — see decision below>
+       &poster=<url, optional - see decision below>
 ```
 
 - Renders a **1200×630 PNG** and returns it with:
@@ -41,7 +41,7 @@ Drop it straight into your page head:
 
 ## The card design
 
-Warm, editorial, print-inspired — like a library index card or a film ticket.
+Warm, editorial, print-inspired - like a library index card or a film ticket.
 
 | Token       | Hex        | Use                                   |
 | ----------- | ---------- | ------------------------------------- |
@@ -63,7 +63,7 @@ Layout:
   treatment.
 - **Subtitle**: muted Inter.
 - **Footer**: a hairline, a kind-specific tagline (e.g. "Logged on Shipyard"),
-  and — when `rating` is present — a row of five flare-colored stars supporting
+  and - when `rating` is present - a row of five flare-colored stars supporting
   full / half / empty states.
 - A ticket-style inset border, a colored left spine, and an oversized faint
   flare disc in the corner give it a premium, composed feel.
@@ -96,7 +96,7 @@ tests (`xml_escaping_prevents_svg_injection`, `ampersand_escaped_before_...`).
 The `poster` query parameter is **accepted but intentionally not rendered.**
 Embedding a remote image would require fetching an arbitrary URL per request,
 base64-encoding it into a `data:` URI, and enabling resvg's raster-image
-decoders (PNG/JPEG/GIF) — which meaningfully inflates the wasm binary and adds a
+decoders (PNG/JPEG/GIF) - which meaningfully inflates the wasm binary and adds a
 network round-trip that can fail, stall, or be abused as an SSRF/proxy vector.
 Per the brief, **"a building, reliable card beats a fragile one."** The card is
 designed to be strong purely typographically, so posters are omitted. The
@@ -131,13 +131,13 @@ npx wrangler dev
 
 ## Files
 
-- `Cargo.toml` — crate config (`cdylib` + `lib`), pinned deps.
-- `src/lib.rs` — `#[event(fetch)]` handler: routing, query parsing, CORS,
+- `Cargo.toml` - crate config (`cdylib` + `lib`), pinned deps.
+- `src/lib.rs` - `#[event(fetch)]` handler: routing, query parsing, CORS,
   caching, error responses.
-- `src/card.rs` — pure SVG composition, word-wrap, star geometry, XML escaping,
+- `src/card.rs` - pure SVG composition, word-wrap, star geometry, XML escaping,
   and `render_png`.
-- `tests/card.rs` — unit tests (title escaping, injection safety, escaping
+- `tests/card.rs` - unit tests (title escaping, injection safety, escaping
   order, truncation, star states 0/5/7/10, kind parsing).
-- `examples/sample.rs` — writes sample PNGs for eyeballing the design.
-- `fonts/` — embedded OFL fonts + their license files.
-- `wrangler.jsonc` — Worker config (`worker-build --release`, observability on).
+- `examples/sample.rs` - writes sample PNGs for eyeballing the design.
+- `fonts/` - embedded OFL fonts + their license files.
+- `wrangler.jsonc` - Worker config (`worker-build --release`, observability on).

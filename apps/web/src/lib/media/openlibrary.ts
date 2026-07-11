@@ -25,7 +25,7 @@ interface OlDoc {
 
 /** Pure: map an Open Library search doc to our shape. */
 export function mapOlDoc(doc: OlDoc): MediaSearchResult {
-  // key is "/works/OL...W" — store just the work OLID.
+  // key is "/works/OL...W" - store just the work OLID.
   const externalId = doc.key.replace(/^\/works\//, "");
   return {
     source: "openlibrary",

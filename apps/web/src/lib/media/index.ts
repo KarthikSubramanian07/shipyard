@@ -23,7 +23,7 @@ export function scoreResult(result: MediaSearchResult, query: string): number {
 
 /**
  * Unified search across films/TV (TMDB) and books (Open Library). Failure of one
- * provider never sinks the whole query — we return whatever succeeded.
+ * provider never sinks the whole query - we return whatever succeeded.
  */
 export async function searchMedia(
   query: string,

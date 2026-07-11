@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 export async function GET(_request: Request, { params }: { params: Promise<{ key: string }> }) {
   const { key } = await params;
   const { env } = getCloudflareContext();
-  // R2 may not be enabled yet — avatars are optional.
+  // R2 may not be enabled yet - avatars are optional.
   if (!env.MEDIA) return new Response("Not found", { status: 404 });
   const object = await env.MEDIA.get(`avatars/${key}`);
   if (!object) return new Response("Not found", { status: 404 });

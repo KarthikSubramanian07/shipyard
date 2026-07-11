@@ -26,7 +26,7 @@ export default async function HomePage() {
             <EmptyState
               icon={Compass}
               title="Your harbor is quiet"
-              description="Follow a few people, or log what you watched last — your feed fills up fast."
+              description="Follow a few people, or log what you watched last - your feed fills up fast."
               action={
                 <Button asChild>
                   <Link href="/discover">Find people to follow</Link>
@@ -67,7 +67,7 @@ export default async function HomePage() {
             Rewrite anything.
           </h1>
           <p className="text-muted-foreground mx-auto mt-5 max-w-xl text-balance text-lg">
-            Letterboxd for every story you&apos;ve ever loved — and the ones you wish existed. Log
+            Letterboxd for every story you&apos;ve ever loved - and the ones you wish existed. Log
             films, TV and books, then write the ending they should&apos;ve had.
           </p>
           <div className="mx-auto mt-8 max-w-md">

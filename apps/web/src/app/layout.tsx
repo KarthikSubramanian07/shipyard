@@ -22,11 +22,11 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "Shipyard — track everything, rewrite anything",
+    default: "Shipyard - track everything, rewrite anything",
     template: "%s · Shipyard",
   },
   description:
-    "Letterboxd for every story you've ever loved — and the ones you wish existed. Track films, TV and books, then rewrite their endings. Free forever.",
+    "Letterboxd for every story you've ever loved - and the ones you wish existed. Track films, TV and books, then rewrite their endings. Free forever.",
   openGraph: {
     siteName: "Shipyard",
     type: "website",

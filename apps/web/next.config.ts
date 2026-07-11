@@ -9,10 +9,11 @@ initOpenNextCloudflareForDev();
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  // Pin the tracing root to this app (avoids picking a stray parent lockfile).
-  outputFileTracingRoot: path.join(import.meta.dirname, "."),
+  // Pin the tracing root to the monorepo root so OpenNext's standalone output
+  // nests under apps/web the way the Cloudflare adapter expects.
+  outputFileTracingRoot: path.join(import.meta.dirname, "../.."),
   // Media posters are hotlinked from TMDB / Open Library at request-appropriate
-  // sizes, so we skip Next's image optimizer entirely (keeps us on the $0 path —
+  // sizes, so we skip Next's image optimizer entirely (keeps us on the $0 path -
   // no runtime image processing on Workers).
   images: {
     unoptimized: true,

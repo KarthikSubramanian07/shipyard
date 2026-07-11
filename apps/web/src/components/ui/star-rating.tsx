@@ -14,7 +14,7 @@ function StarSvg({ className, style }: { className?: string; style?: React.CSSPr
   );
 }
 
-/** Read-only star display. `stars` is on the 0–5 scale (halves allowed). */
+/** Read-only star display. `stars` is on the 0-5 scale (halves allowed). */
 export function Stars({
   stars,
   size = 16,

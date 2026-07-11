@@ -40,7 +40,7 @@ export async function upsertWork(db: DB, detail: MediaDetail): Promise<Work> {
     .get();
 
   if (inserted) return inserted;
-  // Lost a race — fetch the row the other writer created.
+  // Lost a race - fetch the row the other writer created.
   return (await db
     .select()
     .from(works)
@@ -57,7 +57,7 @@ export async function getWorkById(db: DB, id: string): Promise<Work | undefined>
 }
 
 export interface WorkAggregate {
-  /** Mean rating on the 0.5–5 star scale, or null when unrated. */
+  /** Mean rating on the 0.5-5 star scale, or null when unrated. */
   averageStars: number | null;
   ratingCount: number;
 }

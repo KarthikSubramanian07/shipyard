@@ -12,7 +12,7 @@ export function SiteFooter() {
         <div className="max-w-sm space-y-3">
           <Logo />
           <p className="text-muted-foreground text-sm">
-            Track everything. Rewrite anything. Ship your obsessions. Free forever — no signup wall
+            Track everything. Rewrite anything. Ship your obsessions. Free forever - no signup wall
             to read, no paywall ever.
           </p>
           <a

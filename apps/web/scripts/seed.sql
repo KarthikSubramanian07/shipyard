@@ -1,6 +1,6 @@
 -- Demo seed for Shipyard. Idempotent (INSERT OR IGNORE). Run with:
 --   pnpm db:seed:local   (or db:seed:remote)
--- Seeded accounts are OAuth-style (no password) — they populate the feed and
+-- Seeded accounts are OAuth-style (no password) - they populate the feed and
 -- work pages so a fresh install isn't empty. Create your own account to log in.
 
 -- Users -----------------------------------------------------------------------

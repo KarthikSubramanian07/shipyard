@@ -8,7 +8,7 @@ Film & TV search/detail comes from TMDB.
 
 1. Create a free account at [themoviedb.org](https://www.themoviedb.org/signup).
 2. Go to **Settings → API** and request a key (choose "Developer", non-commercial is fine).
-3. Copy the **API Read Access Token (v4)** — the long `eyJ…` bearer token, *not* the short v3 key.
+3. Copy the **API Read Access Token (v4)** - the long `eyJ…` bearer token, *not* the short v3 key.
 4. Local: put it in `apps/web/.dev.vars` as `TMDB_BEARER="…"`.
    Production: `wrangler secret put TMDB_BEARER`.
 

@@ -13,7 +13,7 @@ const SIZES = {
   xl: "size-24 text-3xl",
 } as const;
 
-// Deterministic warm hue from the username — every account gets its own tone.
+// Deterministic warm hue from the username - every account gets its own tone.
 const TONES = [
   "bg-flare-soft text-flare",
   "bg-verdigris-soft text-verdigris",

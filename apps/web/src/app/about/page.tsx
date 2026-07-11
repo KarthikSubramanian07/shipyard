@@ -6,7 +6,7 @@ import { Logo } from "@/components/ui/logo";
 
 export const metadata: Metadata = {
   title: "What is Shipyard?",
-  description: "The first place built for the whole fan — track, create, and connect in one home.",
+  description: "The first place built for the whole fan - track, create, and connect in one home.",
 };
 
 const PILLARS = [
@@ -18,7 +18,7 @@ const PILLARS = [
   {
     icon: PenLine,
     title: "Create",
-    body: "Write fanfic, alternate endings, missing scenes, and theories — attached directly to the source work.",
+    body: "Write fanfic, alternate endings, missing scenes, and theories - attached directly to the source work.",
   },
   {
     icon: Users,
@@ -36,7 +36,7 @@ export default function AboutPage() {
       </h1>
       <p className="text-muted-foreground mt-4 text-balance text-lg">
         Fans have been split across Letterboxd (no fic), Goodreads (dead social layer), AO3 (no
-        tracking), Tumblr (no structure), Reddit (no permanence). Shipyard puts it in one home —
+        tracking), Tumblr (no structure), Reddit (no permanence). Shipyard puts it in one home -
         where ships get built.
       </p>
 
@@ -53,7 +53,7 @@ export default function AboutPage() {
       <div className="text-foreground/90 mt-12 space-y-4">
         <h2 className="font-display text-2xl font-semibold">Free forever</h2>
         <p>
-          No signup wall to read. No paywall, ever. The core is complete and always will be —
+          No signup wall to read. No paywall, ever. The core is complete and always will be -
           Shipyard runs on free infrastructure so it can stay that way.
         </p>
       </div>

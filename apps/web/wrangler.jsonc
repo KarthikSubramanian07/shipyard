@@ -13,7 +13,7 @@
   },
   "vars": {
     // Public, non-secret config. Override per-environment as needed.
-    "NEXT_PUBLIC_APP_URL": "http://localhost:3000",
+    "NEXT_PUBLIC_APP_URL": "https://shipyard.karthik-e5e.workers.dev",
     "NEXT_PUBLIC_SITE_NAME": "Shipyard"
     // Secrets (NOT here): TMDB_BEARER, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET.
     // Set locally in .dev.vars and in prod via `wrangler secret put <NAME>`.

@@ -3,7 +3,7 @@
 
 /* ── Shipyard design language ───────────────────────────────────────────────
    "Warm industrial / maritime literary." Where ships get built.
-   Base:      warm paper + warm ink (never pure #fff / #000 — always warm).
+   Base:      warm paper + warm ink (never pure #fff / #000 - always warm).
    Flare:     rust-vermilion. The signal flare. Primary action + brand.
    Verdigris: oxidized copper-teal. Aged metal on a hull. Secondary.
    Brass:     tarnished gold. Kudos, highlights, the "shiny" accent.
@@ -28,15 +28,15 @@
   --input: #ded4c0;
   --ring: #d0472a;
 
-  /* Brand — Flare (primary) */
+  /* Brand - Flare (primary) */
   --primary: #cf4626;
   --primary-foreground: #fdf6ef;
 
-  /* Brand — Verdigris (secondary) */
+  /* Brand - Verdigris (secondary) */
   --secondary: #0e7c6f;
   --secondary-foreground: #f0fbf8;
 
-  /* Brand — Brass (accent) */
+  /* Brand - Brass (accent) */
   --accent: #b07f2b;
   --accent-foreground: #fffaf0;
 
@@ -182,7 +182,7 @@
 }
 
 @layer utilities {
-  /* Subtle paper grain for large surfaces — adds warmth without noise. */
+  /* Subtle paper grain for large surfaces - adds warmth without noise. */
   .bg-grain {
     background-image: radial-gradient(
       color-mix(in oklab, var(--foreground) 4%, transparent) 0.5px,

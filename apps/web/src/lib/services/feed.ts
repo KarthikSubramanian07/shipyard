@@ -47,12 +47,12 @@ export async function getFollowingFeed(db: DB, userId: string, limit = 40): Prom
     .limit(limit);
 }
 
-/** Site-wide recent activity — powers the logged-out home + discovery. */
+/** Site-wide recent activity - powers the logged-out home + discovery. */
 export async function getGlobalFeed(db: DB, limit = 40): Promise<FeedItem[]> {
   return feedQuery(db).orderBy(desc(activities.createdAt)).limit(limit);
 }
 
-/** Works logged most in the trailing window — "trending this week". */
+/** Works logged most in the trailing window - "trending this week". */
 export async function getTrendingWorks(db: DB, days = 14, limit = 12) {
   const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
   return db
@@ -65,7 +65,7 @@ export async function getTrendingWorks(db: DB, days = 14, limit = 12) {
     .limit(limit);
 }
 
-/** "Also liked" — works highly rated by people who also rated this work highly. */
+/** "Also liked" - works highly rated by people who also rated this work highly. */
 export async function getAlsoLiked(db: DB, workId: string, limit = 8) {
   const rows = await db.all<{
     id: string;

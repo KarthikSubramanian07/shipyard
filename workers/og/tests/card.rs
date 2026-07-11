@@ -1,5 +1,5 @@
 //! Unit tests for the pure card-building logic. These run on the host target
-//! with plain `cargo test` — no wasm, no Worker runtime needed.
+//! with plain `cargo test` - no wasm, no Worker runtime needed.
 
 use shipyard_og::card::{build_card_svg, stars_svg, wrap_title, xml_escape, CardKind, CardParams};
 

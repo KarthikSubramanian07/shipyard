@@ -184,7 +184,7 @@ export const fics = sqliteTable(
     chapterCount: integer("chapter_count").notNull().default(0),
     kudosCount: integer("kudos_count").notNull().default(0),
     commentCount: integer("comment_count").notNull().default(0),
-    // The "inspired by" chain — spawns alternate-alternate endings.
+    // The "inspired by" chain - spawns alternate-alternate endings.
     inspiredByFicId: text("inspired_by_fic_id"),
     publishedAt: integer("published_at", { mode: "timestamp" }),
     createdAt: integer("created_at", { mode: "timestamp" })

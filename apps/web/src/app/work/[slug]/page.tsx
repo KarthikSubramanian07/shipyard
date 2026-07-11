@@ -227,7 +227,7 @@ export default async function WorkPage({
                 <EmptyState
                   icon={MessageSquare}
                   title="No reviews yet"
-                  description="Be the first to write one — log this and add a review."
+                  description="Be the first to write one - log this and add a review."
                 />
               ) : (
                 reviews.map(({ log, user: ru }) => (

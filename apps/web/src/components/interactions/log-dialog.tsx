@@ -57,7 +57,7 @@ function StarInput({
         })}
       </div>
       <span className="text-muted-foreground w-10 text-sm font-medium tabular-nums">
-        {active > 0 ? (active / 2).toFixed(1) : "—"}
+        {active > 0 ? (active / 2).toFixed(1) : "-"}
       </span>
     </div>
   );

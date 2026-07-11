@@ -9,7 +9,7 @@ Prerequisites: everything in [`SETUP.md`](./SETUP.md), plus `pnpm install` at th
 ```bash
 cd apps/web
 
-# D1 database — copy the printed database_id
+# D1 database - copy the printed database_id
 npx wrangler d1 create shipyard-db
 
 # R2 buckets (avatars + the OpenNext incremental cache)
@@ -56,7 +56,7 @@ cargo install -f wasm-bindgen-cli --version 0.2.126
 npx wrangler@4 deploy
 ```
 
-Point the app at it by setting `NEXT_PUBLIC_OG_URL` (e.g. `https://shipyard-og.<subdomain>.workers.dev`) in `apps/web/wrangler.jsonc` and rebuilding. Without it, pages fall back to the static OG image — nothing breaks. See `workers/og/README.md` for the wasm-bindgen version note.
+Point the app at it by setting `NEXT_PUBLIC_OG_URL` (e.g. `https://shipyard-og.<subdomain>.workers.dev`) in `apps/web/wrangler.jsonc` and rebuilding. Without it, pages fall back to the static OG image - nothing breaks. See `workers/og/README.md` for the wasm-bindgen version note.
 
 ## 6. Continuous deployment (optional)
 

@@ -10,7 +10,7 @@ const RENEW_THRESHOLD_MS = SESSION_TTL_MS / 2;
 export type SessionValidationResult =
   { session: { id: string; expiresAt: Date }; user: User } | { session: null; user: null };
 
-/** 20 random bytes, base32 — this raw token goes in the cookie, never the DB. */
+/** 20 random bytes, base32 - this raw token goes in the cookie, never the DB. */
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20);
   crypto.getRandomValues(bytes);
