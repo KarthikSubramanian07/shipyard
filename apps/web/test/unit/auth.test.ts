@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { generateSessionToken, sessionIdFromToken } from "@/lib/auth/session";
-import { toFtsMatch } from "@/lib/services/search";
+import { escapeLike, toFtsMatch } from "@/lib/services/search";
 
 describe("password hashing", () => {
   it("round-trips a password", async () => {
@@ -50,5 +50,16 @@ describe("toFtsMatch", () => {
   it("returns null for empty input", () => {
     expect(toFtsMatch("   ")).toBeNull();
     expect(toFtsMatch("!!!")).toBeNull();
+  });
+  it("caps token count", () => {
+    const many = Array.from({ length: 20 }, (_, i) => `t${i}`).join(" ");
+    expect(toFtsMatch(many)!.split(" ")).toHaveLength(10);
+  });
+});
+
+describe("escapeLike", () => {
+  it("escapes LIKE metacharacters", () => {
+    expect(escapeLike("100%_off")).toBe("100\\%\\_off");
+    expect(escapeLike("a\\b")).toBe("a\\\\b");
   });
 });

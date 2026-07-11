@@ -10,6 +10,7 @@ import { createReaction } from "@/lib/services/reactions";
 import { addComment, CommentValidationError } from "@/lib/services/social";
 import { addToShelf, removeFromShelf } from "@/lib/services/shelves";
 import { getWorkById } from "@/lib/services/works";
+import { rateLimit } from "@/lib/rate-limit";
 import { commentSchema, logSchema, reactionSchema } from "@/lib/validation";
 
 export interface ActionResult {
@@ -71,8 +72,12 @@ export async function submitComment(
   });
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message };
 
+  const db = getDb();
+  const limited = await rateLimit(db, `comment:${user.id}`, 30, 60 * 1000);
+  if (!limited.ok) return { ok: false, error: "Too many comments. Slow down." };
+
   try {
-    await addComment(getDb(), {
+    await addComment(db, {
       userId: user.id,
       entityType,
       entityId,
