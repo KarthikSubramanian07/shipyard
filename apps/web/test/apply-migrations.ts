@@ -1,4 +1,5 @@
-import { applyD1Migrations, env } from "cloudflare:test";
+import { applyD1Migrations } from "cloudflare:test";
+import { env } from "cloudflare:workers";
 
 // Runs once per worker before tests. applyD1Migrations is idempotent (it tracks
 // applied migrations in a table), so this is safe even if invoked multiple times.

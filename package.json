@@ -23,5 +23,17 @@
   "devDependencies": {
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.11"
+  },
+  "pnpm": {
+    "overrides": {
+      "drizzle-orm": ">=0.45.2",
+      "happy-dom": ">=20.8.9",
+      "vite": "^6.4.3",
+      "esbuild": ">=0.25.0",
+      "ws": ">=8.18.3",
+      "postcss": ">=8.4.49",
+      "launch-editor": ">=2.11.1",
+      "wrangler": ">=4.59.1"
+    }
   }
 }

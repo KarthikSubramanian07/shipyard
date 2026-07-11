@@ -29,6 +29,13 @@
       "when": 1783763464708,
       "tag": "0003_gauntlet",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1783764141924,
+      "tag": "0004_profiles_progress",
+      "breakpoints": true
     }
   ]
 }

@@ -9,7 +9,7 @@
     "noEmit": true,
     "incremental": true,
     "plugins": [{ "name": "next" }],
-    "types": ["@cloudflare/workers-types/2023-07-01", "@cloudflare/vitest-pool-workers", "node"],
+    "types": ["@cloudflare/workers-types/2023-07-01", "@cloudflare/vitest-pool-workers/types", "node"],
     "paths": {
       "@/*": ["./src/*"]
     }

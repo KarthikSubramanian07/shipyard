@@ -42,7 +42,9 @@ describe("Badge & Button", () => {
 describe("WorkCard", () => {
   it("links to the work page", () => {
     render(
-      <WorkCard work={{ slug: "dune-2021", title: "Dune", year: 2021, posterUrl: null, type: "film" }} />,
+      <WorkCard
+        work={{ slug: "dune-2021", title: "Dune", year: 2021, posterUrl: null, type: "film" }}
+      />,
     );
     const link = screen.getByRole("link");
     expect(link).toHaveAttribute("href", "/work/dune-2021");

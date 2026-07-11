@@ -52,8 +52,11 @@ export const users = sqliteTable(
     googleId: text("google_id"),
     displayName: text("display_name").notNull(),
     bio: text("bio"),
-    // R2 object key for a self-hosted avatar, else null (falls back to initials).
+    pronouns: text("pronouns"),
+    location: text("location"),
+    // R2 object keys for self-hosted images, else null (avatar falls back to initials).
     avatarKey: text("avatar_key"),
+    bannerKey: text("banner_key"),
     isPro: integer("is_pro", { mode: "boolean" }).notNull().default(false),
     isAdmin: integer("is_admin", { mode: "boolean" }).notNull().default(false),
     createdAt: integer("created_at", { mode: "timestamp" })
@@ -126,6 +129,9 @@ export const logs = sqliteTable(
     // The Gauntlet: triage bucket + derived 0-10 score (finer than `rating`).
     bucket: text("bucket", { enum: GAUNTLET_BUCKETS }),
     score: real("score"),
+    // Progress-aware spoilers: this review discusses events up to this position
+    // (season / chapter / part, per the work's medium). Null = no ahead-spoilers.
+    spoilerUpTo: integer("spoiler_up_to"),
     // One-line reaction (the 30-second habit).
     reaction: text("reaction"),
     // Optional long-form review body (markdown).
@@ -356,6 +362,27 @@ export const shelfItems = sqliteTable(
     primaryKey({ columns: [t.shelfId, t.workId] }),
     index("shelf_items_added_idx").on(t.shelfId, t.addedAt),
   ],
+);
+
+/* ── Media progress (powers progress-aware spoilers) ──────────────────────── */
+
+export const mediaProgress = sqliteTable(
+  "media_progress",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    workId: text("work_id")
+      .notNull()
+      .references(() => works.id, { onDelete: "cascade" }),
+    // Generic ordinal: season (tv), chapter/part (book), 0 for films.
+    position: integer("position").notNull().default(0),
+    label: text("label"),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.workId] })],
 );
 
 /* ── Social graph & interactions ──────────────────────────────────────────── */
