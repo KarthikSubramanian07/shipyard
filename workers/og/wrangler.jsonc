@@ -1,0 +1,16 @@
+{
+  // Shipyard Open Graph share-card renderer (workers-rs / Rust -> wasm).
+  "name": "shipyard-og",
+  "main": "build/worker/shim.mjs",
+  "compatibility_date": "2025-03-25",
+
+  // workers-rs builds the wasm + JS shim via worker-build.
+  "build": {
+    "command": "worker-build --release"
+  },
+
+  // Structured logs / traces in the Cloudflare dashboard.
+  "observability": {
+    "enabled": true
+  }
+}

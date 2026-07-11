@@ -1,0 +1,24 @@
+[package]
+name = "shipyard-og"
+version = "0.1.0"
+edition = "2021"
+authors = ["Shipyard"]
+description = "Cloudflare Worker that renders Open Graph share cards for Shipyard"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+worker = { version = "0.5", features = ["http"] }
+# Pure-Rust SVG rasterization stack — no C deps, wasm32-friendly.
+# default-features disabled to drop system-fonts / memmap (not available on wasm).
+resvg = { version = "0.47", default-features = false, features = ["text"] }
+usvg = { version = "0.47", default-features = false, features = ["text"] }
+tiny-skia = { version = "0.12", default-features = false, features = ["std", "png-format"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true
