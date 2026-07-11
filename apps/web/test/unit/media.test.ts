@@ -5,14 +5,36 @@ import { mapMultiItem, parseTmdbExternalId, tmdbPoster } from "@/lib/media/tmdb"
 
 describe("tmdb mapping", () => {
   it("maps a movie", () => {
-    const r = mapMultiItem({ id: 603, media_type: "movie", title: "The Matrix", release_date: "1999-03-31", poster_path: "/x.jpg" });
-    expect(r).toMatchObject({ source: "tmdb", externalId: "movie:603", type: "film", title: "The Matrix", year: 1999 });
+    const r = mapMultiItem({
+      id: 603,
+      media_type: "movie",
+      title: "The Matrix",
+      release_date: "1999-03-31",
+      poster_path: "/x.jpg",
+    });
+    expect(r).toMatchObject({
+      source: "tmdb",
+      externalId: "movie:603",
+      type: "film",
+      title: "The Matrix",
+      year: 1999,
+    });
     expect(r?.posterUrl).toBe("https://image.tmdb.org/t/p/w342/x.jpg");
   });
 
   it("maps a tv series", () => {
-    const r = mapMultiItem({ id: 1399, media_type: "tv", name: "Game of Thrones", first_air_date: "2011-04-17" });
-    expect(r).toMatchObject({ externalId: "tv:1399", type: "tv", title: "Game of Thrones", year: 2011 });
+    const r = mapMultiItem({
+      id: 1399,
+      media_type: "tv",
+      name: "Game of Thrones",
+      first_air_date: "2011-04-17",
+    });
+    expect(r).toMatchObject({
+      externalId: "tv:1399",
+      type: "tv",
+      title: "Game of Thrones",
+      year: 2011,
+    });
   });
 
   it("skips people and other media types", () => {
@@ -32,8 +54,21 @@ describe("tmdb mapping", () => {
 
 describe("open library mapping", () => {
   it("maps a search doc", () => {
-    const r = mapOlDoc({ key: "/works/OL45883W", title: "Dune", author_name: ["Frank Herbert"], first_publish_year: 1965, cover_i: 240727 });
-    expect(r).toMatchObject({ source: "openlibrary", externalId: "OL45883W", type: "book", title: "Dune", year: 1965, subtitle: "Frank Herbert" });
+    const r = mapOlDoc({
+      key: "/works/OL45883W",
+      title: "Dune",
+      author_name: ["Frank Herbert"],
+      first_publish_year: 1965,
+      cover_i: 240727,
+    });
+    expect(r).toMatchObject({
+      source: "openlibrary",
+      externalId: "OL45883W",
+      type: "book",
+      title: "Dune",
+      year: 1965,
+      subtitle: "Frank Herbert",
+    });
     expect(r.posterUrl).toBe("https://covers.openlibrary.org/b/id/240727-M.jpg");
   });
 
@@ -44,7 +79,14 @@ describe("open library mapping", () => {
 });
 
 describe("scoreResult", () => {
-  const base = { source: "tmdb" as const, externalId: "movie:1", type: "film" as const, year: null, posterUrl: null, subtitle: null };
+  const base = {
+    source: "tmdb" as const,
+    externalId: "movie:1",
+    type: "film" as const,
+    year: null,
+    posterUrl: null,
+    subtitle: null,
+  };
   it("ranks exact > prefix > includes > none", () => {
     expect(scoreResult({ ...base, title: "Dune" }, "dune")).toBe(3);
     expect(scoreResult({ ...base, title: "Dune: Part Two" }, "dune")).toBe(2);

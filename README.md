@@ -36,9 +36,10 @@ On Letterboxd the review *is* the creative act. On Shipyard, the review is the *
 
 - **Unified search** across films/TV (TMDB) and books (Open Library) with instant typeahead - works are imported lazily, only when someone actually logs one.
 - **The log dialog** - half-star ratings, a one-line reaction, an optional full markdown review, spoiler tags. Fast.
-- **Work pages** built for SEO and sharing - overview, reviews, fanfic, and "fans also loved" (taste-overlap discovery, pure SQL).
+- **Inline spoilers** - wrap anything in `>!like this!<` for a tap-to-reveal redaction bar, in reviews, comments, and fanfic. No more all-or-nothing hidden reviews.
+- **Work pages** built for SEO and sharing - poster, backdrop banner, overview, reviews, fanfic, and "fans also loved" (taste-overlap discovery, pure SQL).
 - **The fanfic moat** - a clean, iA-Writer-style editor. Types, ratings, canon-compliance, tone tags, pairings, chapters, kudos, and WIP subscriptions.
-- **Profiles & shelves** - Watched / Reading / Want to Watch / Favorites, plus stats and a diary of everything you've logged.
+- **The Manifest** - save films/shows/books to your watchlist/readlist, plus a Favorites shelf, from any work. Shelves: Watched / Reading / Want / Favorites.
 - **Social** - asymmetric follows, a real activity feed, likes, one-level threaded comments, notifications.
 - **Share cards** - every work, review, and fic gets a beautiful 1200×630 Open Graph image rendered by a **Rust → WASM Cloudflare Worker**. Every share is an ad.
 - **Auth** - email + password (native `node:crypto` scrypt) and Google OAuth (PKCE). Sessions use the hash-the-token pattern; a DB leak leaks nothing usable.

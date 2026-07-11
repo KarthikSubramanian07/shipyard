@@ -154,7 +154,10 @@ export function LogDialog({
               {showReview ? (
                 <div className="space-y-2">
                   <label htmlFor="review" className="text-sm font-medium">
-                    Review <span className="text-muted-foreground">(markdown ok)</span>
+                    Review{" "}
+                    <span className="text-muted-foreground">
+                      (wrap spoilers in {">"}!like this!{"<"})
+                    </span>
                   </label>
                   <textarea
                     id="review"

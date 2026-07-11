@@ -10,6 +10,7 @@ import { getFicsForWork } from "@/lib/services/fics";
 import { getReviewsForWork, getUserLogForWork } from "@/lib/services/logs";
 import { getReactionsForWork } from "@/lib/services/reactions";
 import { getAlsoLiked } from "@/lib/services/feed";
+import { getWorkShelfSlugs } from "@/lib/services/shelves";
 import { getWorkAggregate, getWorkBySlug } from "@/lib/services/works";
 import { FicCard } from "@/components/fic-card";
 import { ReviewCard } from "@/components/review-card";
@@ -23,6 +24,7 @@ import { RatingSummary } from "@/components/ui/star-rating";
 import { LikeButton } from "@/components/interactions/like-button";
 import { LogDialog } from "@/components/interactions/log-dialog";
 import { ReactionComposer } from "@/components/interactions/reaction-composer";
+import { SaveShelf } from "@/components/interactions/save-shelf";
 import { relativeTime } from "@/lib/utils";
 
 const TYPE_LABEL: Record<WorkType, string> = { film: "Film", tv: "TV series", book: "Book" };
@@ -70,13 +72,14 @@ export default async function WorkPage({
   const user = await getCurrentUser();
   const tab: Tab = tabParam === "reviews" || tabParam === "fanfic" ? tabParam : "overview";
 
-  const [agg, userLog, reviews, reactions, fics, alsoLiked] = await Promise.all([
+  const [agg, userLog, reviews, reactions, fics, alsoLiked, shelfSlugs] = await Promise.all([
     getWorkAggregate(db, work.id),
     user ? getUserLogForWork(db, user.id, work.id) : Promise.resolve(undefined),
     getReviewsForWork(db, work.id, 20),
     getReactionsForWork(db, work.id, 20),
     getFicsForWork(db, work.id, 20),
     getAlsoLiked(db, work.id, 8),
+    user ? getWorkShelfSlugs(db, user.id, work.id) : Promise.resolve<string[]>([]),
   ]);
 
   const meta = (work.metadata ?? {}) as {
@@ -84,11 +87,24 @@ export default async function WorkPage({
     cast?: string[];
     directors?: string[];
     subjects?: string[];
+    backdropUrl?: string;
   };
   const path = `/work/${work.slug}`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      {meta.backdropUrl ? (
+        <div className="border-border relative mb-6 h-40 w-full overflow-hidden rounded-xl border sm:h-56 md:h-64">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={meta.backdropUrl}
+            alt=""
+            className="h-full w-full object-cover"
+            loading="eager"
+          />
+          <div className="from-background/90 via-background/20 absolute inset-0 bg-gradient-to-t to-transparent" />
+        </div>
+      ) : null}
       <div className="grid gap-8 md:grid-cols-[220px_1fr]">
         {/* Left rail */}
         <div className="space-y-4">
@@ -109,6 +125,13 @@ export default async function WorkPage({
                 : null
             }
             triggerLabel={userLog ? "Edit your log" : "Log or rate"}
+          />
+          <SaveShelf
+            workId={work.id}
+            type={work.type}
+            initialInManifest={shelfSlugs.includes("want")}
+            initialFavorite={shelfSlugs.includes("favorites")}
+            authed={!!user}
           />
           <Button asChild variant="secondary" className="w-full">
             <Link href={`/write/${work.slug}`}>

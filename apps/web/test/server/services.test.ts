@@ -7,7 +7,7 @@ import { shelves } from "@/db/schema";
 import { newId } from "@/lib/id";
 import type { MediaDetail } from "@/lib/media/types";
 import { getFollowingFeed } from "@/lib/services/feed";
-import { createFic, getFicsForWork, toggleKudos } from "@/lib/services/fics";
+import { addChapter, createFic, getFicsForWork, toggleKudos } from "@/lib/services/fics";
 import { getReviewsForWork, upsertLog } from "@/lib/services/logs";
 import { searchWorks } from "@/lib/services/search";
 import { addComment, follow, toggleLike } from "@/lib/services/social";
@@ -85,7 +85,12 @@ describe("logs & aggregates", () => {
   it("surfaces reviews with a body", async () => {
     const work = await upsertWork(db, detail());
     const user = await makeUser();
-    await upsertLog(db, { userId: user.id, workId: work.id, rating: 9, reviewBody: "Devastating." });
+    await upsertLog(db, {
+      userId: user.id,
+      workId: work.id,
+      rating: 9,
+      reviewBody: "Devastating.",
+    });
     const reviews = await getReviewsForWork(db, work.id);
     expect(reviews).toHaveLength(1);
     expect(reviews[0]!.log.reviewBody).toBe("Devastating.");
@@ -160,6 +165,25 @@ describe("fics", () => {
     const fic = await db.select().from(schema.fics).where(eq(schema.fics.id, id)).get();
     expect(fic!.kudosCount).toBe(1);
     expect(fic!.chapterCount).toBe(1);
+  });
+
+  it("only lets the author add chapters (IDOR guard)", async () => {
+    const work = await upsertWork(db, detail());
+    const author = await makeUser();
+    const attacker = await makeUser();
+    const { id } = await createFic(db, author.id, work.id, {
+      title: "Owned",
+      type: "continuation",
+      rating: "general",
+      canon: "canon",
+      tone: [],
+      body: "chapter one text",
+    });
+    await expect(addChapter(db, id, attacker.id, { body: "sneaky chapter" })).rejects.toThrow();
+    // The author can.
+    await expect(addChapter(db, id, author.id, { body: "real chapter" })).resolves.toBeTruthy();
+    const fic = await db.select().from(schema.fics).where(eq(schema.fics.id, id)).get();
+    expect(fic!.chapterCount).toBe(2);
   });
 
   it("counts fics in profile stats", async () => {

@@ -9,6 +9,12 @@ export function tmdbPoster(path: string | null | undefined, size = "w342"): stri
   return `${TMDB_IMAGE_BASE}${size}${path}`;
 }
 
+/** Build a wide backdrop (banner) URL. */
+export function tmdbBackdrop(path: string | null | undefined, size = "w1280"): string | null {
+  if (!path) return null;
+  return `${TMDB_IMAGE_BASE}${size}${path}`;
+}
+
 function yearFrom(date: string | null | undefined): number | null {
   if (!date) return null;
   const y = Number.parseInt(date.slice(0, 4), 10);
@@ -23,6 +29,7 @@ interface TmdbMultiItem {
   release_date?: string;
   first_air_date?: string;
   poster_path?: string | null;
+  backdrop_path?: string | null;
   overview?: string;
 }
 
@@ -133,6 +140,7 @@ export async function tmdbGetDetail(token: string, externalId: string): Promise<
       runtime: isMovie ? data.runtime : data.episode_run_time?.[0],
       seasons: data.number_of_seasons,
       voteAverage: data.vote_average,
+      backdropUrl: tmdbBackdrop(data.backdrop_path),
     },
   };
 }

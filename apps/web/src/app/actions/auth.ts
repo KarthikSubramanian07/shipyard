@@ -15,6 +15,7 @@ import {
   verifyPassword,
 } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
+import { safeNextPath } from "@/lib/redirect";
 import { createUser, getUserByEmail, getUserByUsername } from "@/lib/services/users";
 import { loginSchema, signupSchema } from "@/lib/validation";
 
@@ -75,8 +76,7 @@ export async function login(_prev: AuthState, formData: FormData): Promise<AuthS
   const token = generateSessionToken();
   const session = await createSession(db, token, user.id);
   await setSessionCookie(token, session.expiresAt);
-  const next = formData.get("next");
-  redirect(typeof next === "string" && next.startsWith("/") ? next : `/u/${user.username}`);
+  redirect(safeNextPath(formData.get("next"), `/u/${user.username}`));
 }
 
 export async function logout(): Promise<void> {

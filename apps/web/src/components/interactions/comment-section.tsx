@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { submitComment } from "@/app/actions/content";
 import type { EntityType } from "@/db/schema";
+import { SpoilerText } from "@/components/spoiler-text";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { relativeTime } from "@/lib/utils";
@@ -120,7 +121,7 @@ function CommentRow({ comment }: { comment: CommentView }) {
             {relativeTime(comment.createdAt * 1000)}
           </span>
         </p>
-        <p className="text-foreground/90 whitespace-pre-wrap text-sm">{comment.body}</p>
+        <SpoilerText text={comment.body} className="text-foreground/90 text-sm" />
       </div>
     </div>
   );

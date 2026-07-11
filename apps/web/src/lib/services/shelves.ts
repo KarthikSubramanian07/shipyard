@@ -63,6 +63,16 @@ export async function removeFromShelf(
     .where(and(eq(shelfItems.shelfId, shelf.id), eq(shelfItems.workId, workId)));
 }
 
+/** Which of a user's shelves currently hold this work (by slug). */
+export async function getWorkShelfSlugs(db: DB, userId: string, workId: string): Promise<string[]> {
+  const rows = await db
+    .select({ slug: shelves.slug })
+    .from(shelfItems)
+    .innerJoin(shelves, eq(shelfItems.shelfId, shelves.id))
+    .where(and(eq(shelves.userId, userId), eq(shelfItems.workId, workId)));
+  return rows.map((r) => r.slug);
+}
+
 /** Works on a given shelf, most-recently-added first, with work metadata. */
 export async function getShelfWorks(db: DB, userId: string, shelfSlug: string, limit = 60) {
   return db

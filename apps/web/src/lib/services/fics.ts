@@ -61,10 +61,13 @@ export async function createFic(
 export async function addChapter(
   db: DB,
   ficId: string,
+  authorId: string,
   input: { title?: string | null; body: string },
 ): Promise<string> {
   const fic = await db.select().from(fics).where(eq(fics.id, ficId)).get();
   if (!fic) throw new Error("Fic not found");
+  // Ownership check: only the author may add chapters (prevents IDOR).
+  if (fic.userId !== authorId) throw new Error("Not authorized");
 
   const words = wordCount(input.body);
   const chapterId = newId();

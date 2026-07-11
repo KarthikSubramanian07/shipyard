@@ -25,13 +25,15 @@ INSERT OR IGNORE INTO shelves (id, user_id, name, slug, is_default, position) VA
   ('shf_wren_want', 'usr_wren', 'Want to Watch', 'want', 1, 2),
   ('shf_wren_fav', 'usr_wren', 'Favorites', 'favorites', 1, 3);
 
--- Works (lightweight external references) --------------------------------------
-INSERT OR IGNORE INTO works (id, source, external_id, type, slug, title, year, synopsis) VALUES
-  ('wrk_succ', 'tmdb', 'tv:1043578', 'tv', 'succession-2018', 'Succession', 2018, 'A media dynasty tears itself apart over who inherits the throne.'),
-  ('wrk_past', 'tmdb', 'movie:666277', 'film', 'past-lives-2023', 'Past Lives', 2023, 'Two childhood friends reunite across decades and continents.'),
-  ('wrk_annih', 'tmdb', 'movie:300668', 'film', 'annihilation-2018', 'Annihilation', 2018, 'A biologist enters a shimmering zone where nature rewrites itself.'),
-  ('wrk_lhod', 'openlibrary', 'OL27482W', 'book', 'the-left-hand-of-darkness-1969', 'The Left Hand of Darkness', 1969, 'An envoy navigates a world without fixed gender.'),
-  ('wrk_pyre', 'tmdb', 'tv:94997', 'tv', 'house-of-the-dragon-2022', 'House of the Dragon', 2022, 'A Targaryen civil war a century before the Iron Throne fell.');
+-- Works (lightweight external references). Book covers come from Open Library
+-- (no key). Film/TV posters are left NULL here and are backfilled from TMDB once
+-- a TMDB_BEARER token is set (see scripts/backfill-posters.mjs).
+INSERT OR IGNORE INTO works (id, source, external_id, type, slug, title, year, poster_url, synopsis) VALUES
+  ('wrk_succ', 'tmdb', 'tv:76331', 'tv', 'succession-2018', 'Succession', 2018, NULL, 'A media dynasty tears itself apart over who inherits the throne.'),
+  ('wrk_past', 'tmdb', 'movie:666277', 'film', 'past-lives-2023', 'Past Lives', 2023, NULL, 'Two childhood friends reunite across decades and continents.'),
+  ('wrk_annih', 'tmdb', 'movie:300668', 'film', 'annihilation-2018', 'Annihilation', 2018, NULL, 'A biologist enters a shimmering zone where nature rewrites itself.'),
+  ('wrk_lhod', 'openlibrary', 'OL59800W', 'book', 'the-left-hand-of-darkness-1969', 'The Left Hand of Darkness', 1969, 'https://covers.openlibrary.org/b/id/10618463-L.jpg', 'An envoy navigates a world without fixed gender.'),
+  ('wrk_pyre', 'tmdb', 'tv:94997', 'tv', 'house-of-the-dragon-2022', 'House of the Dragon', 2022, NULL, 'A Targaryen civil war a century before the Iron Throne fell.');
 
 -- Logs (with ratings + a couple of reviews) ------------------------------------
 INSERT OR IGNORE INTO logs (id, user_id, work_id, rating, reaction, review_body, has_spoilers, like_count) VALUES

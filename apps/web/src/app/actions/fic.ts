@@ -53,7 +53,11 @@ export async function addChapterAction(
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Write something" };
 
-  await addChapter(getDb(), ficId, parsed.data);
+  try {
+    await addChapter(getDb(), ficId, user.id, parsed.data);
+  } catch {
+    return { error: "You can only add chapters to your own fic" };
+  }
   revalidatePath(`/fic/${ficSlug}`);
   redirect(`/fic/${ficSlug}`);
 }

@@ -19,6 +19,8 @@
     "db:migrate:remote": "wrangler d1 migrations apply shipyard-db --remote",
     "db:seed:local": "wrangler d1 execute shipyard-db --local --file=./scripts/seed.sql",
     "db:seed:remote": "wrangler d1 execute shipyard-db --remote --file=./scripts/seed.sql",
+    "backfill:posters": "node scripts/backfill-posters.mjs",
+    "backfill:posters:remote": "node scripts/backfill-posters.mjs --remote",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {

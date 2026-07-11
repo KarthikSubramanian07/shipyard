@@ -3,6 +3,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Stars } from "@/components/ui/star-rating";
 import { LikeButton } from "@/components/interactions/like-button";
+import { SpoilerText } from "@/components/spoiler-text";
 import { ratingToStars } from "@/lib/rating";
 import { relativeTime } from "@/lib/utils";
 
@@ -41,17 +42,11 @@ export function ReviewCard({
       </div>
 
       {review.hasSpoilers ? (
-        <div className="group relative">
-          <Badge variant="flare" className="mb-1.5">
-            Spoilers · hover to reveal
-          </Badge>
-          <p className="prose-shipyard text-foreground/90 whitespace-pre-wrap text-sm blur-sm transition group-hover:blur-none">
-            {review.reviewBody}
-          </p>
-        </div>
-      ) : (
-        <p className="text-foreground/90 whitespace-pre-wrap text-sm">{review.reviewBody}</p>
-      )}
+        <Badge variant="flare" className="mb-1.5">
+          Spoiler-tagged
+        </Badge>
+      ) : null}
+      <SpoilerText text={review.reviewBody} className="text-foreground/90 text-sm" />
 
       <LikeButton
         entityType="log"

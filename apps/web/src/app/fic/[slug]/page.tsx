@@ -9,6 +9,7 @@ import { getComments } from "@/lib/services/social";
 import { CommentSection, type CommentView } from "@/components/interactions/comment-section";
 import { KudosButton } from "@/components/interactions/kudos-button";
 import { AddChapter, SubscribeButton } from "@/components/fic-actions";
+import { SpoilerText } from "@/components/spoiler-text";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ficLength, formatCount } from "@/lib/utils";
@@ -139,7 +140,9 @@ export default async function FicPage({ params }: { params: Promise<{ slug: stri
                 {ch.title ?? `Chapter ${i + 1}`}
               </h2>
             ) : null}
-            <div className="prose-shipyard text-foreground/90 whitespace-pre-wrap">{ch.body}</div>
+            <div className="prose-shipyard text-foreground/90">
+              <SpoilerText text={ch.body} />
+            </div>
           </section>
         ))}
       </div>
