@@ -4,10 +4,10 @@ declare global {
   interface CloudflareEnv {
     /** D1 (SQLite) — primary datastore. */
     DB: D1Database;
-    /** R2 — user-uploaded avatars. */
-    MEDIA: R2Bucket;
-    /** R2 — OpenNext incremental (ISR/SSG) cache. */
-    NEXT_INC_CACHE_R2_BUCKET: R2Bucket;
+    /** R2 — user-uploaded avatars. Present only once R2 is enabled. */
+    MEDIA?: R2Bucket;
+    /** R2 — OpenNext incremental (ISR/SSG) cache. Optional. */
+    NEXT_INC_CACHE_R2_BUCKET?: R2Bucket;
     /** Static assets fetcher (OpenNext). */
     ASSETS: Fetcher;
 
