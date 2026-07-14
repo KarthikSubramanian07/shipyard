@@ -22,4 +22,8 @@ export function ogImageUrl(params: {
   return u.toString();
 }
 
-export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+// Prefer the deployed Workers URL when NEXT_PUBLIC_APP_URL is unset/empty so
+// sitemap, robots, and OG absolute URLs stay correct at build time.
+export const APP_URL = (
+  process.env.NEXT_PUBLIC_APP_URL?.trim() || "https://shipyard.karthik-e5e.workers.dev"
+).replace(/\/$/, "");
