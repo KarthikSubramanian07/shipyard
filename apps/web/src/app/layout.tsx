@@ -19,20 +19,33 @@ const newsreader = Newsreader({
   display: "swap",
 });
 
+const TITLE = "Shipyard - track everything, rewrite anything";
+const DESCRIPTION =
+  "Letterboxd for every story you've ever loved - and the ones you wish existed. Track films, TV and books, then rewrite their endings. Free forever.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "Shipyard - track everything, rewrite anything",
+    default: TITLE,
     template: "%s · Shipyard",
   },
-  description:
-    "Letterboxd for every story you've ever loved - and the ones you wish existed. Track films, TV and books, then rewrite their endings. Free forever.",
+  description: DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
     siteName: "Shipyard",
     type: "website",
     url: APP_URL,
+    locale: "en_US",
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
   icons: { icon: "/favicon.svg" },
 };
 

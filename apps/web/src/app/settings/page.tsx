@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
 import { SettingsForm } from "@/components/settings-form";
 
-export const metadata: Metadata = { title: "Settings" };
+export const metadata: Metadata = {
+  title: "Settings",
+  robots: { index: false, follow: false },
+};
 
 export default async function SettingsPage() {
   const user = await requireUser("/settings");
