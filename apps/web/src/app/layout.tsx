@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/layout/footer";
 import { SiteHeader } from "@/components/layout/header";
 import { themeInitScript } from "@/components/theme-toggle";
 import { APP_URL } from "@/lib/og";
+import { SITE } from "@/lib/site";
 import "@/styles/globals.css";
 
 const fraunces = Fraunces({
@@ -22,15 +23,17 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "Shipyard - track everything, rewrite anything",
+    default: SITE.title,
     template: "%s · Shipyard",
   },
   description:
-    "Letterboxd for every story you've ever loved - and the ones you wish existed. Track films, TV and books, then rewrite their endings. Free forever.",
+    "Shipyard is a free film, TV and book tracker with a fanfiction home - Letterboxd for every story you've ever loved, and the ones you wish existed. Log, rank and review, then rewrite the endings.",
+  applicationName: SITE.name,
   openGraph: {
-    siteName: "Shipyard",
+    siteName: SITE.name,
     type: "website",
     url: APP_URL,
+    images: [{ url: SITE.ogImage, width: 1200, height: 630, alt: SITE.tagline }],
   },
   twitter: { card: "summary_large_image" },
   icons: { icon: "/favicon.svg" },
