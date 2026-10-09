@@ -36,6 +36,8 @@ export function SiteFooter() {
           </FooterCol>
           <FooterCol title="About">
             <FooterLink href="/about">What is Shipyard?</FooterLink>
+            <FooterLink href="/contact">Contact</FooterLink>
+            <FooterLink href="/privacy">Privacy</FooterLink>
             <a
               href={GITHUB_URL}
               target="_blank"

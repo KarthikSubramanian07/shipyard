@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { AuthForm } from "@/components/auth-form";
 
-export const metadata: Metadata = { title: "Join" };
+// Account screens hold no content; keep them out of search and agent indexes.
+export const metadata: Metadata = { title: "Join", robots: { index: false, follow: true } };
 
 export default function SignupPage() {
   return (

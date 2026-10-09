@@ -94,6 +94,14 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           </>
         )}
       </p>
+
+      <p className="text-muted-foreground mt-3 text-center text-xs">
+        Reading never needs an account - every review, list, fic and profile is public.{" "}
+        <Link href="/discover" className="text-primary hover:underline">
+          Browse the yard
+        </Link>
+        .
+      </p>
     </div>
   );
 }
