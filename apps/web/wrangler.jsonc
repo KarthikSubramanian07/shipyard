@@ -1,7 +1,12 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "shipyard",
-  "main": ".open-next/worker.js",
+  "main": "worker.ts",
+  // Public traffic arrives via the Pages project in workers/edge
+  // (https://artshipyard.pages.dev) over a service binding, so the
+  // account-prefixed *.workers.dev URL and preview URLs are switched off.
+  "workers_dev": false,
+  "preview_urls": false,
   "compatibility_date": "2025-03-25",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
@@ -13,7 +18,7 @@
   },
   "vars": {
     // Public, non-secret config. Override per-environment as needed.
-    "NEXT_PUBLIC_APP_URL": "https://shipyard.karthik-e5e.workers.dev",
+    "NEXT_PUBLIC_APP_URL": "https://artshipyard.pages.dev",
     "NEXT_PUBLIC_SITE_NAME": "Shipyard"
     // Secrets (NOT here): TMDB_BEARER, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET.
     // Set locally in .dev.vars and in prod via `wrangler secret put <NAME>`.

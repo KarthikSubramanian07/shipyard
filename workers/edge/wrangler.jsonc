@@ -1,0 +1,9 @@
+{
+  // Cloudflare Pages project that gives Shipyard its clean public URL
+  // (artshipyard.pages.dev) and forwards all traffic to the `shipyard` Worker.
+  "$schema": "../../apps/web/node_modules/wrangler/config-schema.json",
+  "name": "artshipyard",
+  "pages_build_output_dir": "./public",
+  "compatibility_date": "2025-03-25",
+  "services": [{ "binding": "APP", "service": "shipyard" }]
+}
