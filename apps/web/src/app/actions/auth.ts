@@ -1,6 +1,5 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getDb } from "@/db";
 import {
@@ -15,17 +14,13 @@ import {
   verifyPassword,
 } from "@/lib/auth";
 import { rateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/request";
 import { safeNextPath } from "@/lib/redirect";
 import { createUser, getUserByEmail, getUserByUsername } from "@/lib/services/users";
 import { loginSchema, signupSchema } from "@/lib/validation";
 
 export interface AuthState {
   error?: string;
-}
-
-async function clientIp(): Promise<string> {
-  const h = await headers();
-  return h.get("cf-connecting-ip") ?? h.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
 }
 
 export async function signup(_prev: AuthState, formData: FormData): Promise<AuthState> {

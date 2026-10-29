@@ -20,22 +20,35 @@ const newsreader = Newsreader({
   display: "swap",
 });
 
+const DESCRIPTION =
+  "Shipyard is a free film, TV and book tracker with a fanfiction home - Letterboxd for every story you've ever loved, and the ones you wish existed. Log, rank and review, then rewrite the endings.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
     default: SITE.title,
     template: "%s · Shipyard",
   },
-  description:
-    "Shipyard is a free film, TV and book tracker with a fanfiction home - Letterboxd for every story you've ever loved, and the ones you wish existed. Log, rank and review, then rewrite the endings.",
+  description: DESCRIPTION,
   applicationName: SITE.name,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
+    title: SITE.title,
+    description: DESCRIPTION,
     siteName: SITE.name,
     type: "website",
     url: APP_URL,
+    locale: "en_US",
     images: [{ url: SITE.ogImage, width: 1200, height: 630, alt: SITE.tagline }],
   },
-  twitter: { card: "summary_large_image" },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE.title,
+    description: DESCRIPTION,
+    images: [SITE.ogImage],
+  },
   icons: { icon: "/favicon.svg" },
 };
 

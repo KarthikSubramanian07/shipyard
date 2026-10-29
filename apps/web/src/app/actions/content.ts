@@ -7,9 +7,10 @@ import type { EntityType } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth";
 import { upsertLog } from "@/lib/services/logs";
 import { createReaction } from "@/lib/services/reactions";
-import { addComment } from "@/lib/services/social";
+import { addComment, CommentValidationError } from "@/lib/services/social";
 import { addToShelf, removeFromShelf } from "@/lib/services/shelves";
 import { getWorkById } from "@/lib/services/works";
+import { rateLimit } from "@/lib/rate-limit";
 import { commentSchema, logSchema, reactionSchema } from "@/lib/validation";
 
 export interface ActionResult {
@@ -60,7 +61,6 @@ export async function postReaction(workId: string, formData: FormData): Promise<
 export async function submitComment(
   entityType: EntityType,
   entityId: string,
-  ownerId: string | null,
   path: string,
   formData: FormData,
 ): Promise<ActionResult> {
@@ -72,14 +72,24 @@ export async function submitComment(
   });
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message };
 
-  await addComment(getDb(), {
-    userId: user.id,
-    entityType,
-    entityId,
-    body: parsed.data.body,
-    parentId: parsed.data.parentId,
-    ownerId,
-  });
+  const db = getDb();
+  const limited = await rateLimit(db, `comment:${user.id}`, 30, 60 * 1000);
+  if (!limited.ok) return { ok: false, error: "Too many comments. Slow down." };
+
+  try {
+    await addComment(db, {
+      userId: user.id,
+      entityType,
+      entityId,
+      body: parsed.data.body,
+      parentId: parsed.data.parentId,
+    });
+  } catch (err) {
+    if (err instanceof CommentValidationError) {
+      return { ok: false, error: err.message };
+    }
+    throw err;
+  }
   revalidatePath(path);
   return { ok: true };
 }

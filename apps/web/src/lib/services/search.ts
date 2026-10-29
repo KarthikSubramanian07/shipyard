@@ -1,4 +1,4 @@
-import { or, like, sql } from "drizzle-orm";
+import { or, sql } from "drizzle-orm";
 import type { DB } from "@/db";
 import { lists, users } from "@/db/schema";
 
@@ -18,12 +18,21 @@ export interface SearchFicRow {
   summary: string | null;
 }
 
+const FTS_MAX_INPUT = 100;
+const FTS_MAX_TOKENS = 10;
+
+/** Escape `%` and `_` so user input cannot broaden SQLite LIKE patterns. */
+export function escapeLike(input: string): string {
+  return input.replace(/([%_\\])/g, "\\$1");
+}
+
 /**
  * Turn free text into a safe FTS5 MATCH expression: each token quoted (so
  * punctuation can't break the query) with a trailing `*` for prefix search.
  */
 export function toFtsMatch(input: string): string | null {
-  const tokens = input.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+  const clipped = input.slice(0, FTS_MAX_INPUT);
+  const tokens = (clipped.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).slice(0, FTS_MAX_TOKENS);
   if (tokens.length === 0) return null;
   return tokens.map((t) => `"${t.replace(/"/g, '""')}"*`).join(" ");
 }
@@ -56,7 +65,7 @@ export async function searchFics(db: DB, query: string, limit = 10): Promise<Sea
 }
 
 export async function searchUsers(db: DB, query: string, limit = 6) {
-  const q = `%${query.toLowerCase()}%`;
+  const q = `%${escapeLike(query.toLowerCase())}%`;
   return db
     .select({
       id: users.id,
@@ -65,16 +74,21 @@ export async function searchUsers(db: DB, query: string, limit = 6) {
       avatarKey: users.avatarKey,
     })
     .from(users)
-    .where(or(like(sql`lower(${users.username})`, q), like(sql`lower(${users.displayName})`, q)))
+    .where(
+      or(
+        sql`lower(${users.username}) LIKE ${q} ESCAPE '\\'`,
+        sql`lower(${users.displayName}) LIKE ${q} ESCAPE '\\'`,
+      ),
+    )
     .limit(limit);
 }
 
 export async function searchLists(db: DB, query: string, limit = 6) {
-  const q = `%${query.toLowerCase()}%`;
+  const q = `%${escapeLike(query.toLowerCase())}%`;
   return db
     .select({ id: lists.id, slug: lists.slug, title: lists.title, itemCount: lists.itemCount })
     .from(lists)
-    .where(like(sql`lower(${lists.title})`, q))
+    .where(sql`lower(${lists.title}) LIKE ${q} ESCAPE '\\'`)
     .limit(limit);
 }
 

@@ -3,7 +3,10 @@ import type { Metadata } from "next";
 import { requireUser } from "@/lib/auth";
 import { SearchBox } from "@/components/search-box";
 
-export const metadata: Metadata = { title: "Write a fic" };
+export const metadata: Metadata = {
+  title: "Write a fic",
+  robots: { index: false, follow: false },
+};
 
 export default async function WriteChooserPage() {
   await requireUser("/write");

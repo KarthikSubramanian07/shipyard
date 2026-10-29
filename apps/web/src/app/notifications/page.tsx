@@ -8,7 +8,10 @@ import { Avatar } from "@/components/ui/avatar";
 import { EmptyState } from "@/components/ui/misc";
 import { relativeTime } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Notifications" };
+export const metadata: Metadata = {
+  title: "Notifications",
+  robots: { index: false, follow: false },
+};
 
 const VERB: Record<string, string> = {
   follow: "started following you",

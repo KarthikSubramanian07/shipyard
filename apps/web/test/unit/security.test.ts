@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { sanitizeMediaObjectKey } from "@/lib/media/keys";
 import { safeNextPath } from "@/lib/redirect";
 import { hasSpoilerMarkers, parseSpoilers } from "@/lib/spoilers";
 
@@ -20,6 +21,20 @@ describe("safeNextPath (open-redirect guard)", () => {
     expect(safeNextPath(undefined)).toBe("/");
     expect(safeNextPath(42)).toBe("/");
     expect(safeNextPath("relative", "/home")).toBe("/home");
+  });
+});
+
+describe("sanitizeMediaObjectKey", () => {
+  it("accepts simple object keys", () => {
+    expect(sanitizeMediaObjectKey("user_abc.jpg")).toBe("user_abc.jpg");
+    expect(sanitizeMediaObjectKey("a.b-c_1")).toBe("a.b-c_1");
+  });
+
+  it("rejects path traversal and separators", () => {
+    expect(sanitizeMediaObjectKey("../secrets")).toBeNull();
+    expect(sanitizeMediaObjectKey("a/b")).toBeNull();
+    expect(sanitizeMediaObjectKey("a\\b")).toBeNull();
+    expect(sanitizeMediaObjectKey("")).toBeNull();
   });
 });
 

@@ -129,6 +129,39 @@ export async function getFlareCounts(
 // Only log & fic carry a commentCount column; lists/reactions are skipped.
 const COMMENT_COUNTER = { log: logs, fic: fics } as const;
 
+const COMMENT_OWNER = {
+  log: logs,
+  fic: fics,
+  list: lists,
+  reaction: reactions,
+} as const;
+
+export class CommentValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "CommentValidationError";
+  }
+}
+
+/** Resolve the entity owner server-side; never trust a client-supplied ownerId. */
+async function resolveCommentOwner(
+  db: DB,
+  entityType: EntityType,
+  entityId: string,
+): Promise<string | null> {
+  const table = COMMENT_OWNER[entityType as keyof typeof COMMENT_OWNER];
+  if (!table) {
+    throw new CommentValidationError("Comments are not supported on this entity");
+  }
+  const row = await db
+    .select({ userId: table.userId })
+    .from(table)
+    .where(eq(table.id, entityId))
+    .get();
+  if (!row) throw new CommentValidationError("Unknown entity");
+  return row.userId;
+}
+
 export async function addComment(
   db: DB,
   input: {
@@ -137,9 +170,31 @@ export async function addComment(
     entityId: string;
     body: string;
     parentId?: string | null;
-    ownerId?: string | null;
   },
 ): Promise<string> {
+  const ownerId = await resolveCommentOwner(db, input.entityType, input.entityId);
+
+  if (input.parentId) {
+    const parent = await db
+      .select({
+        id: comments.id,
+        entityType: comments.entityType,
+        entityId: comments.entityId,
+        parentId: comments.parentId,
+      })
+      .from(comments)
+      .where(eq(comments.id, input.parentId))
+      .get();
+    if (
+      !parent ||
+      parent.entityType !== input.entityType ||
+      parent.entityId !== input.entityId ||
+      parent.parentId !== null
+    ) {
+      throw new CommentValidationError("Invalid parent comment");
+    }
+  }
+
   const id = newId();
   await db.insert(comments).values({
     id,
@@ -158,9 +213,9 @@ export async function addComment(
       .where(eq(table.id, input.entityId));
   }
 
-  if (input.ownerId) {
+  if (ownerId && ownerId !== input.userId) {
     await notify(db, {
-      userId: input.ownerId,
+      userId: ownerId,
       type: "comment",
       actorId: input.userId,
       entityType: input.entityType,

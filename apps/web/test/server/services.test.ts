@@ -142,10 +142,48 @@ describe("social graph & feed", () => {
       entityType: "log",
       entityId: logId,
       body: "Great take",
-      ownerId: author.id,
     });
     const row = await db.select().from(schema.logs).where(eq(schema.logs.id, logId)).get();
     expect(row!.commentCount).toBe(1);
+  });
+
+  it("rejects comments on unknown entities and nested replies", async () => {
+    const work = await upsertWork(db, detail());
+    const author = await makeUser();
+    const logId = await upsertLog(db, { userId: author.id, workId: work.id, reviewBody: "hi" });
+    const commenter = await makeUser();
+
+    await expect(
+      addComment(db, {
+        userId: commenter.id,
+        entityType: "log",
+        entityId: "missing-log",
+        body: "Nope",
+      }),
+    ).rejects.toThrow(/Unknown entity/);
+
+    const rootId = await addComment(db, {
+      userId: commenter.id,
+      entityType: "log",
+      entityId: logId,
+      body: "Root",
+    });
+    const replyId = await addComment(db, {
+      userId: commenter.id,
+      entityType: "log",
+      entityId: logId,
+      body: "Reply",
+      parentId: rootId,
+    });
+    await expect(
+      addComment(db, {
+        userId: commenter.id,
+        entityType: "log",
+        entityId: logId,
+        body: "Too deep",
+        parentId: replyId,
+      }),
+    ).rejects.toThrow(/Invalid parent/);
   });
 });
 
