@@ -1,4 +1,5 @@
 import { Compass, Sparkles, TrendingUp } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getDb } from "@/db";
 import { getCurrentUser } from "@/lib/auth";
@@ -8,6 +9,20 @@ import { SearchBox } from "@/components/search-box";
 import { WorkCard } from "@/components/work-card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/misc";
+import { jsonLdScript, siteJsonLd } from "@/lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+function SiteJsonLd() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: jsonLdScript(siteJsonLd()) }}
+    />
+  );
+}
 
 export default async function HomePage() {
   const user = await getCurrentUser();
@@ -20,6 +35,7 @@ export default async function HomePage() {
     ]);
     return (
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 lg:grid-cols-[1fr_300px]">
+        <SiteJsonLd />
         <section>
           <h1 className="font-display mb-5 text-2xl font-semibold">Your feed</h1>
           {feed.length === 0 ? (
@@ -55,6 +71,7 @@ export default async function HomePage() {
 
   return (
     <div>
+      <SiteJsonLd />
       {/* Hero */}
       <section className="bg-flare-wash border-border border-b">
         <div className="mx-auto max-w-4xl px-4 py-20 text-center">

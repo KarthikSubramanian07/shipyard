@@ -1,14 +1,15 @@
 import type { MetadataRoute } from "next";
-import { APP_URL } from "@/lib/og";
+import { absoluteUrl, SITE } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/settings", "/notifications", "/login", "/signup", "/write"],
+      // Account screens and APIs hold no public content.
+      disallow: ["/api/", "/login", "/signup", "/settings", "/notifications", "/write"],
     },
-    sitemap: `${APP_URL}/sitemap.xml`,
-    host: new URL(APP_URL).host,
+    sitemap: absoluteUrl("/sitemap.xml"),
+    host: new URL(SITE.url).host,
   };
 }

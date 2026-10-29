@@ -54,6 +54,13 @@ jobs:
         name: Build & deploy
         run: pnpm deploy
 
+      # The public front door: a Pages project that forwards to the Worker
+      # above over a service binding (https://artshipyard.pages.dev).
+      - if: steps.guard.outputs.skip != 'true'
+        name: Deploy edge (artshipyard.pages.dev)
+        run: npx wrangler pages deploy --branch main
+        working-directory: workers/edge
+
   deploy-og:
     name: Deploy OG worker (Rust)
     runs-on: ubuntu-latest

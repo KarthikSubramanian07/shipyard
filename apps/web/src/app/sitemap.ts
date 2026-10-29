@@ -1,12 +1,16 @@
 import type { MetadataRoute } from "next";
-import { APP_URL } from "@/lib/og";
+import { getDb } from "@/db";
+import { getSitemapEntries } from "@/lib/services/sitemap";
+import { absoluteUrl } from "@/lib/site";
 
-const PUBLIC_PATHS = ["", "/about", "/discover"] as const;
+// Built from D1 on each request so new works, fics and lists show up at once.
+export const dynamic = "force-dynamic";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return PUBLIC_PATHS.map((path) => ({
-    url: `${APP_URL}${path}`,
-    changeFrequency: path === "" ? "daily" : "weekly",
-    priority: path === "" ? 1 : 0.7,
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const entries = await getSitemapEntries(getDb());
+  const now = new Date();
+  return entries.map((e) => ({
+    url: absoluteUrl(e.path),
+    lastModified: e.lastModified ?? now,
   }));
 }

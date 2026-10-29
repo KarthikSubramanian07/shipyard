@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/layout/footer";
 import { SiteHeader } from "@/components/layout/header";
 import { themeInitScript } from "@/components/theme-toggle";
 import { APP_URL } from "@/lib/og";
+import { SITE } from "@/lib/site";
 import "@/styles/globals.css";
 
 const fraunces = Fraunces({
@@ -19,32 +20,34 @@ const newsreader = Newsreader({
   display: "swap",
 });
 
-const TITLE = "Shipyard - track everything, rewrite anything";
 const DESCRIPTION =
-  "Letterboxd for every story you've ever loved - and the ones you wish existed. Track films, TV and books, then rewrite their endings. Free forever.";
+  "Shipyard is a free film, TV and book tracker with a fanfiction home - Letterboxd for every story you've ever loved, and the ones you wish existed. Log, rank and review, then rewrite the endings.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: TITLE,
+    default: SITE.title,
     template: "%s · Shipyard",
   },
   description: DESCRIPTION,
+  applicationName: SITE.name,
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: TITLE,
+    title: SITE.title,
     description: DESCRIPTION,
-    siteName: "Shipyard",
+    siteName: SITE.name,
     type: "website",
     url: APP_URL,
     locale: "en_US",
+    images: [{ url: SITE.ogImage, width: 1200, height: 630, alt: SITE.tagline }],
   },
   twitter: {
     card: "summary_large_image",
-    title: TITLE,
+    title: SITE.title,
     description: DESCRIPTION,
+    images: [SITE.ogImage],
   },
   icons: { icon: "/favicon.svg" },
 };

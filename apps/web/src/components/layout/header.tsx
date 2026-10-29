@@ -57,10 +57,14 @@ export async function SiteHeader() {
           ) : (
             <>
               <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link href="/login">Log in</Link>
+                <Link href="/login" rel="nofollow">
+                  Log in
+                </Link>
               </Button>
               <Button asChild size="sm">
-                <Link href="/signup">Join</Link>
+                <Link href="/signup" rel="nofollow">
+                  Join
+                </Link>
               </Button>
             </>
           )}

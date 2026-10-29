@@ -37,7 +37,7 @@ pnpm db:seed:remote         # optional demo data
 pnpm deploy                 # opennextjs-cloudflare build && deploy
 ```
 
-`pnpm deploy` builds the OpenNext worker bundle (`.open-next/worker.js`) and uploads it with your assets. You'll get a `*.workers.dev` URL immediately.
+`pnpm deploy` builds the OpenNext worker bundle (`.open-next/worker.js`) and uploads it with your assets. The Worker itself has no public URL (`workers_dev: false`); the public front door is the Pages project in `workers/edge`, which forwards to it over a service binding and serves **https://artshipyard.pages.dev**. Create it once with `npx wrangler pages project create artshipyard --production-branch main`, then `cd workers/edge && npx wrangler pages deploy --branch main` (CI does this on every push to `main`).
 
 ## 4. Custom domain (optional)
 
