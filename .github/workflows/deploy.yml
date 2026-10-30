@@ -38,7 +38,7 @@ jobs:
       - if: steps.guard.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
 
       - if: steps.guard.outputs.skip != 'true'
@@ -91,7 +91,7 @@ jobs:
         run: |
           cargo install worker-build --version "^0.1" --locked || true
           # worker 0.5 requires a matching wasm-bindgen CLI (see workers/og/README.md)
-          cargo install -f wasm-bindgen-cli --version 0.2.126 --locked || true
+          cargo install -f wasm-bindgen-cli --version 0.2.105 --locked || true
 
       - if: steps.guard.outputs.skip != 'true'
         uses: pnpm/action-setup@v4
