@@ -29,14 +29,22 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
   const [users, setUsers] = useState<UserHit[]>([]);
   const boxRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const term = q.trim();
-    if (term.length < 2) {
+  // Reset and loading state change with the input, not in the effect, so the
+  // effect only runs the debounced fetch.
+  function onQueryChange(value: string) {
+    setQ(value);
+    if (value.trim().length < 2) {
       setMedia([]);
       setUsers([]);
-      return;
+      setLoading(false);
+    } else {
+      setLoading(true);
     }
-    setLoading(true);
+  }
+
+  useEffect(() => {
+    const term = q.trim();
+    if (term.length < 2) return;
     const ctrl = new AbortController();
     const t = setTimeout(async () => {
       try {
@@ -84,7 +92,7 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
           <Search className="text-muted-foreground pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2" />
           <input
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={(e) => onQueryChange(e.target.value)}
             onFocus={() => hasResults && setOpen(true)}
             autoFocus={autoFocus}
             placeholder="What did you watch last?"
