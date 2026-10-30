@@ -39,10 +39,10 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^2.6.0",
-    "zod": "^3.24.1"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.18.4",
+    "@cloudflare/vitest-pool-workers": "^0.23.0",
     "@cloudflare/workers-types": "^5.20261030.1",
     "@opennextjs/cloudflare": "^1.20.14",
     "@tailwindcss/postcss": "^4.0.0",
@@ -57,11 +57,12 @@
     "drizzle-kit": "^0.31.4",
     "eslint": "^9.17.0",
     "eslint-config-next": "^16.4.3",
-    "happy-dom": "^20.8.9",
+    "happy-dom": "^21.0.4",
     "postcss": "^8.5.23",
     "tailwindcss": "^4.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
+    "vite": "^6.4.5",
     "vitest": "^4.1.0",
     "wrangler": "^4.156.0"
   }
