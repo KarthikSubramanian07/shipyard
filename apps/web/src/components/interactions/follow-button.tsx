@@ -38,14 +38,15 @@ export function FollowButton({
       size="sm"
       onClick={onClick}
       disabled={pending}
+      aria-pressed={following}
     >
       {following ? (
         <>
-          <Check /> Following
+          <Check aria-hidden="true" /> Following
         </>
       ) : (
         <>
-          <UserPlus /> Follow
+          <UserPlus aria-hidden="true" /> Follow
         </>
       )}
     </Button>

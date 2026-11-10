@@ -66,6 +66,7 @@ export function CommentSection({
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={2}
+            aria-label="Add a comment"
             placeholder="Add a comment…"
             className="border-input bg-card focus-visible:border-ring focus-visible:ring-ring/40 flex-1 resize-none rounded-lg border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2"
           />

@@ -50,17 +50,19 @@ export function SaveShelf({
         variant={inManifest ? "verdigris" : "secondary"}
         size="sm"
         onClick={() => toggle("want")}
+        aria-pressed={inManifest}
         title={`${wantLabel} - add to your Manifest`}
       >
-        {inManifest ? <Check /> : <Anchor />}
+        {inManifest ? <Check aria-hidden="true" /> : <Anchor aria-hidden="true" />}
         {inManifest ? "On Manifest" : "Manifest"}
       </Button>
       <Button
         variant={favorite ? "primary" : "secondary"}
         size="sm"
         onClick={() => toggle("favorites")}
+        aria-pressed={favorite}
       >
-        <Heart className={favorite ? "fill-current" : ""} />
+        <Heart className={favorite ? "fill-current" : ""} aria-hidden="true" />
         {favorite ? "Favorited" : "Favorite"}
       </Button>
     </div>
