@@ -36,7 +36,7 @@ export default async function DiscoverPage() {
       {trending.length > 0 && (
         <section>
           <h2 className="font-display mb-4 flex items-center gap-2 text-lg font-semibold">
-            <TrendingUp className="text-flare size-5" /> Trending this month
+            <TrendingUp className="text-flare size-5" aria-hidden="true" /> Trending this month
           </h2>
           <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6">
             {trending.map(({ work }) => (
@@ -49,7 +49,7 @@ export default async function DiscoverPage() {
       {recent.length > 0 && (
         <section>
           <h2 className="font-display mb-4 flex items-center gap-2 text-lg font-semibold">
-            <Compass className="text-flare size-5" /> Fresh activity
+            <Compass className="text-flare size-5" aria-hidden="true" /> Fresh activity
           </h2>
           <div className="max-w-2xl">
             {recent.map((item) => (

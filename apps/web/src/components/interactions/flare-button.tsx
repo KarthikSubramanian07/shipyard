@@ -38,9 +38,16 @@ export function FlareButton({
     function onClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape" && open) setOpen(false);
+    }
     document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
-  }, []);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   function choose(next: FlareKey) {
     if (!authed) {
@@ -73,7 +80,7 @@ export function FlareButton({
         {flare ? (
           <span className="text-base leading-none">{flareEmoji(flare)}</span>
         ) : (
-          <Flame className="size-4" />
+          <Flame className="size-4" aria-hidden="true" />
         )}
         {count > 0 ? formatCount(count) : "Flare"}
       </button>

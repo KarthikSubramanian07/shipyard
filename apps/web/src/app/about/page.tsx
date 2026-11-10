@@ -43,7 +43,7 @@ export default function AboutPage() {
       <div className="mt-12 grid gap-6 sm:grid-cols-3">
         {PILLARS.map((p) => (
           <div key={p.title} className="border-border bg-card rounded-xl border p-5">
-            <p.icon className="text-flare size-6" />
+            <p.icon className="text-flare size-6" aria-hidden="true" />
             <h2 className="font-display mt-3 text-lg font-semibold">{p.title}</h2>
             <p className="text-muted-foreground mt-1 text-sm">{p.body}</p>
           </div>
@@ -61,7 +61,7 @@ export default function AboutPage() {
       <div className="mt-10 flex flex-wrap items-center gap-3">
         <Button asChild size="lg">
           <Link href="/signup">
-            <Heart /> Join the crew
+            <Heart aria-hidden="true" /> Join the crew
           </Link>
         </Button>
         <a
@@ -70,7 +70,8 @@ export default function AboutPage() {
           rel="noopener noreferrer"
           className="bg-brass-soft text-brass inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium hover:brightness-105"
         >
-          <Coffee className="size-4" /> Buy the maker a coffee
+          <Coffee className="size-4" aria-hidden="true" /> Buy the maker a coffee{" "}
+          <span className="sr-only">(opens in a new tab)</span>
         </a>
       </div>
     </div>

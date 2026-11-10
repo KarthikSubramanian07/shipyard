@@ -21,11 +21,15 @@ export function SiteFooter() {
             rel="noopener noreferrer"
             className="bg-brass-soft text-brass inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors hover:brightness-105"
           >
-            <Coffee className="size-4" /> Buy me a coffee
+            <Coffee className="size-4" aria-hidden="true" /> Buy me a coffee
+            <span className="sr-only">(opens in a new tab)</span>
           </a>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm sm:grid-cols-3">
+        <nav
+          aria-label="Footer"
+          className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm sm:grid-cols-3"
+        >
           <FooterCol title="Explore">
             <FooterLink href="/discover">Discover</FooterLink>
             <FooterLink href="/search">Search</FooterLink>
@@ -44,10 +48,11 @@ export function SiteFooter() {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5"
             >
-              <Github className="size-3.5" /> GitHub
+              <Github className="size-3.5" aria-hidden="true" /> GitHub
+              <span className="sr-only">(opens in a new tab)</span>
             </a>
           </FooterCol>
-        </div>
+        </nav>
       </div>
       <div className="border-border border-t">
         <p className="text-muted-foreground mx-auto max-w-6xl px-4 py-5 text-xs">

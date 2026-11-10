@@ -76,7 +76,7 @@ export default async function HomePage() {
       <section className="bg-flare-wash border-border border-b">
         <div className="mx-auto max-w-4xl px-4 py-20 text-center">
           <p className="bg-card/70 text-flare mb-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium">
-            <Sparkles className="size-3.5" /> Free forever · no signup wall
+            <Sparkles className="size-3.5" aria-hidden="true" /> Free forever · no signup wall
           </p>
           <h1 className="font-display text-balance text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
             Track everything.
@@ -143,7 +143,7 @@ function SectionHeading({
   return (
     <div className="mb-5 flex items-center justify-between">
       <h2 className="font-display flex items-center gap-2 text-xl font-semibold">
-        <Icon className="text-flare size-5" /> {title}
+        <Icon className="text-flare size-5" aria-hidden="true" /> {title}
       </h2>
       {href ? (
         <Link href={href} className="text-primary text-sm font-medium hover:underline">

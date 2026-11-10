@@ -33,8 +33,8 @@ export function SubscribeButton({
   }
 
   return (
-    <Button variant="secondary" onClick={onClick} disabled={pending}>
-      {subscribed ? <BellRing /> : <Bell />}
+    <Button variant="secondary" onClick={onClick} disabled={pending} aria-pressed={subscribed}>
+      {subscribed ? <BellRing aria-hidden="true" /> : <Bell aria-hidden="true" />}
       {subscribed ? "Subscribed" : "Subscribe"}
     </Button>
   );
@@ -60,7 +60,7 @@ export function AddChapter({ ficId, ficSlug }: { ficId: string; ficSlug: string 
   if (!open) {
     return (
       <Button variant="outline" onClick={() => setOpen(true)}>
-        <Plus /> Add a chapter
+        <Plus aria-hidden="true" /> Add a chapter
       </Button>
     );
   }
@@ -74,6 +74,7 @@ export function AddChapter({ ficId, ficSlug }: { ficId: string; ficSlug: string 
       <input
         name="title"
         maxLength={160}
+        aria-label="Chapter title (optional)"
         placeholder="Chapter title (optional)"
         className="border-input bg-background focus-visible:ring-ring/40 h-10 w-full rounded-lg border px-3 text-sm focus-visible:outline-none focus-visible:ring-2"
       />
@@ -81,10 +82,15 @@ export function AddChapter({ ficId, ficSlug }: { ficId: string; ficSlug: string 
         name="body"
         required
         rows={10}
+        aria-label="Chapter body"
         placeholder="Write the next chapter…"
         className="prose-shipyard border-input bg-background focus-visible:ring-ring/40 w-full resize-y rounded-lg border px-3 py-2 focus-visible:outline-none focus-visible:ring-2"
       />
-      {error ? <p className="text-destructive text-sm">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-destructive text-sm">
+          {error}
+        </p>
+      ) : null}
       <div className="flex justify-end gap-2">
         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
           Cancel

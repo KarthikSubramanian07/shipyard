@@ -45,6 +45,7 @@ export function FicEditor({ workId, workTitle }: { workId: string; workTitle: st
 
       <input
         name="title"
+        aria-label="Fic title"
         required
         maxLength={160}
         placeholder="Title your fic"
@@ -55,6 +56,7 @@ export function FicEditor({ workId, workTitle }: { workId: string; workTitle: st
         name="summary"
         rows={2}
         maxLength={1000}
+        aria-label="A one-paragraph summary (optional)"
         placeholder="A one-paragraph summary (optional)…"
         className="text-muted-foreground placeholder:text-muted-foreground/50 mt-3 w-full resize-none border-none bg-transparent text-base focus:outline-none"
       />
@@ -63,9 +65,13 @@ export function FicEditor({ workId, workTitle }: { workId: string; workTitle: st
       <button
         type="button"
         onClick={() => setShowDetails((v) => !v)}
+        aria-expanded={showDetails}
         className="text-primary mt-4 flex items-center gap-1 text-sm font-medium"
       >
-        <ChevronDown className={`size-4 transition-transform ${showDetails ? "" : "-rotate-90"}`} />
+        <ChevronDown
+          className={`size-4 transition-transform ${showDetails ? "" : "-rotate-90"}`}
+          aria-hidden="true"
+        />
         Details &amp; tags
       </button>
 
@@ -111,6 +117,7 @@ export function FicEditor({ workId, workTitle }: { workId: string; workTitle: st
         <textarea
           name="body"
           required
+          aria-label="Fic body text"
           value={body}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Write. The blank page is yours…"
@@ -118,7 +125,11 @@ export function FicEditor({ workId, workTitle }: { workId: string; workTitle: st
         />
       </div>
 
-      {error ? <p className="text-destructive text-sm">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-destructive text-sm">
+          {error}
+        </p>
+      ) : null}
 
       <div className="border-border bg-background/90 sticky bottom-0 -mx-4 mt-4 flex items-center justify-between border-t px-4 py-3 backdrop-blur">
         <span className="text-muted-foreground text-sm">
@@ -167,6 +178,7 @@ function ToneInput() {
       <input
         value={raw}
         onChange={(e) => setRaw(e.target.value)}
+        aria-label="Tone tags (comma-separated)"
         placeholder="angst, slow burn, hurt-comfort"
         className={inputCls}
       />

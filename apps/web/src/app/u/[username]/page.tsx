@@ -78,7 +78,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
             {profile.pronouns ? <span>· {profile.pronouns}</span> : null}
             {profile.location ? (
               <span className="inline-flex items-center gap-0.5">
-                · <MapPin className="size-3" /> {profile.location}
+                · <MapPin className="size-3" aria-hidden="true" /> {profile.location}
               </span>
             ) : null}
           </p>
@@ -221,7 +221,7 @@ function Section({
   return (
     <section>
       <h2 className="font-display mb-4 flex items-center gap-2 text-lg font-semibold">
-        <Icon className="text-flare size-5" /> {title}
+        <Icon className="text-flare size-5" aria-hidden="true" /> {title}
       </h2>
       {children}
     </section>

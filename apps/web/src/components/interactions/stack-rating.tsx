@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { getOpponentsAction, type Opponent } from "@/app/actions/stack";
 import type { WorkType } from "@/db/schema";
 import { BUCKET_META, scoreForInsertion, tierForScore, type Bucket } from "@/lib/stack";
@@ -26,12 +26,15 @@ export function StackRating({
   workType,
   value,
   onChange,
+  labelledBy,
 }: {
   workId: string;
   workTitle: string;
   workType: WorkType;
   value: StackValue | null;
   onChange: (v: StackValue | null) => void;
+  /** Id of the visible question that names the bucket choice. */
+  labelledBy?: string;
 }) {
   const [phase, setPhase] = useState<"pick" | "compare">("pick");
   const [bucket, setBucket] = useState<Bucket | null>(value?.bucket ?? null);
@@ -40,6 +43,17 @@ export function StackRating({
   const [hi, setHi] = useState(0);
   const [comparisons, setComparisons] = useState(0);
   const [pending, start] = useTransition();
+  const promptRef = useRef<HTMLParagraphElement>(null);
+  const bucketsRef = useRef<HTMLDivElement>(null);
+  const movedFocus = useRef(false);
+
+  // The two phases swap whole button sets, so keep keyboard focus with the
+  // question being asked instead of letting it fall back to the page (WCAG 2.4.3).
+  useEffect(() => {
+    if (!movedFocus.current) return;
+    if (phase === "compare") promptRef.current?.focus();
+    else bucketsRef.current?.querySelector<HTMLButtonElement>("[aria-pressed=true]")?.focus();
+  }, [phase, lo, hi]);
 
   function finalize(b: Bucket, ops: Opponent[], index: number) {
     const upper = index > 0 ? (ops[index - 1]?.score ?? null) : null;
@@ -61,6 +75,7 @@ export function StackRating({
       setLo(0);
       setHi(ops.length);
       setComparisons(0);
+      movedFocus.current = true;
       setPhase("compare");
     });
   }
@@ -85,8 +100,19 @@ export function StackRating({
     const opp = opponents[mid];
     return (
       <div className="border-border bg-muted/40 space-y-3 rounded-lg border p-3">
-        <p className="text-center text-sm font-medium">Which did you like more?</p>
-        <div className="grid grid-cols-2 gap-2">
+        <p
+          ref={promptRef}
+          id={`${workId}-compare`}
+          tabIndex={-1}
+          className="text-center text-sm font-medium outline-none"
+        >
+          Which did you like more?
+          <span className="sr-only">
+            {" "}
+            Comparison {comparisons + 1} of at most {MAX_COMPARISONS}.
+          </span>
+        </p>
+        <div role="group" aria-labelledby={`${workId}-compare`} className="grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => choose(true)}
@@ -103,7 +129,7 @@ export function StackRating({
           </button>
         </div>
         <div className="text-muted-foreground flex items-center justify-between text-xs">
-          <span>
+          <span aria-hidden="true">
             Comparison {comparisons + 1} of ≤{MAX_COMPARISONS}
           </span>
           <button
@@ -120,13 +146,19 @@ export function StackRating({
 
   return (
     <div className="space-y-2">
-      <div className="grid grid-cols-3 gap-2">
+      <div
+        ref={bucketsRef}
+        role="group"
+        aria-labelledby={labelledBy}
+        className="grid grid-cols-3 gap-2"
+      >
         {(Object.keys(BUCKET_META) as Bucket[]).map((b) => (
           <button
             key={b}
             type="button"
             disabled={pending}
             data-on={bucket === b}
+            aria-pressed={bucket === b}
             onClick={() => pickBucket(b)}
             className={cn(
               "rounded-lg border px-2 py-2.5 text-sm font-medium transition-colors",
@@ -137,25 +169,27 @@ export function StackRating({
           </button>
         ))}
       </div>
-      {value ? (
-        <div className="flex items-center gap-2 text-sm">
-          <TierBadge score={value.score} />
-          <span className="text-muted-foreground">
-            {value.score.toFixed(1)} / 10 · ranked in {BUCKET_META[value.bucket].label}
-          </span>
-          <button
-            type="button"
-            onClick={() => onChange(null)}
-            className="text-muted-foreground hover:text-foreground ml-auto text-xs font-medium"
-          >
-            Clear
-          </button>
-        </div>
-      ) : (
-        <p className="text-muted-foreground text-xs">
-          Triage it, then a couple of quick head-to-heads rank it.
-        </p>
-      )}
+      <div role="status">
+        {value ? (
+          <div className="flex items-center gap-2 text-sm">
+            <TierBadge score={value.score} />
+            <span className="text-muted-foreground">
+              {value.score.toFixed(1)} / 10 · ranked in {BUCKET_META[value.bucket].label}
+            </span>
+            <button
+              type="button"
+              onClick={() => onChange(null)}
+              className="text-muted-foreground hover:text-foreground ml-auto text-xs font-medium"
+            >
+              Clear
+            </button>
+          </div>
+        ) : (
+          <p className="text-muted-foreground text-xs">
+            Triage it, then a couple of quick head-to-heads rank it.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
@@ -179,6 +213,7 @@ export function TierBadge({ score, className }: { score: number; className?: str
       )}
       title={`Tier ${tier} · ${score.toFixed(1)}/10`}
     >
+      <span className="sr-only">Tier </span>
       {tier}
     </span>
   );

@@ -49,7 +49,7 @@ export default function ContactPage() {
       <div className="mt-12 grid gap-6 sm:grid-cols-3">
         {CHANNELS.map((c) => (
           <div key={c.title} className="border-border bg-card flex flex-col rounded-xl border p-5">
-            <c.icon className="text-flare size-6" />
+            <c.icon className="text-flare size-6" aria-hidden="true" />
             <h2 className="font-display mt-3 text-lg font-semibold">{c.title}</h2>
             <p className="text-muted-foreground mt-1 flex-1 text-sm">{c.body}</p>
             <a
@@ -58,7 +58,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               className="text-primary mt-4 text-sm font-medium hover:underline"
             >
-              {c.cta} →
+              {c.cta} → <span className="sr-only">(opens in a new tab)</span>
             </a>
           </div>
         ))}
@@ -90,7 +90,8 @@ export default function ContactPage() {
             rel="noopener noreferrer"
             className="text-brass inline-flex items-center gap-1 font-medium hover:underline"
           >
-            <Coffee className="size-4" /> buy the maker a coffee
+            <Coffee className="size-4" aria-hidden="true" /> buy the maker a coffee{" "}
+            <span className="sr-only">(opens in a new tab)</span>
           </a>
           .
         </p>

@@ -61,8 +61,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="flex min-h-dvh flex-col">
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <a
+          href="#main"
+          className="bg-popover text-foreground border-border sr-only z-50 rounded-lg border px-4 py-2 text-sm font-medium shadow-lg focus:not-sr-only focus:fixed focus:left-4 focus:top-3"
+        >
+          Skip to content
+        </a>
         <SiteHeader />
-        <main className="flex-1">{children}</main>
+        <main id="main" tabIndex={-1} className="flex-1 outline-none">
+          {children}
+        </main>
         <SiteFooter />
       </body>
     </html>

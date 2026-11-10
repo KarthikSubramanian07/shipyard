@@ -40,7 +40,7 @@ const SECTIONS: { title: string; body: React.ReactNode }[] = [
       <>
         You can change your profile at any time in settings. To remove something you posted, export
         your data, or delete your account entirely, use the{" "}
-        <Link href="/contact" className="text-primary hover:underline">
+        <Link href="/contact" className="text-primary underline">
           contact page
         </Link>
         . Deleted accounts are removed from the live database right away.

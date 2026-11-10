@@ -46,15 +46,18 @@ export function ProgressControl({
     <div className="border-border bg-card rounded-lg border p-3">
       <p className="text-muted-foreground text-xs font-medium">How far are you?</p>
       <div className="mt-2 flex items-center gap-2">
-        <span className="text-sm">{noun}</span>
-        <input
-          type="number"
-          min={0}
-          max={999}
-          value={pos}
-          onChange={(e) => setPos(Math.max(0, Number(e.target.value) || 0))}
-          className="border-input bg-background focus-visible:ring-ring/40 h-9 w-16 rounded-lg border px-2 text-sm focus-visible:outline-none focus-visible:ring-2"
-        />
+        <label className="flex items-center gap-2 text-sm">
+          <span>{noun}</span>
+          <input
+            type="number"
+            min={0}
+            max={999}
+            aria-label={`${noun} progress`}
+            value={pos}
+            onChange={(e) => setPos(Math.max(0, Number(e.target.value) || 0))}
+            className="border-input bg-background focus-visible:ring-ring/40 h-9 w-16 rounded-lg border px-2 text-sm focus-visible:outline-none focus-visible:ring-2"
+          />
+        </label>
         <Button size="sm" variant="secondary" onClick={save} disabled={pending || pos === saved}>
           {pending ? "…" : "Save"}
         </Button>
