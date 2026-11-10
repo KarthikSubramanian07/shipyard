@@ -25,32 +25,33 @@
   --muted: #e8e0cf;
   --muted-foreground: #6c6350;
   --border: #ddd3bf;
-  --input: #ded4c0;
+  /* Field borders identify the control, so they keep 3:1 against card and page (WCAG 1.4.11). */
+  --input: #a08754;
   --ring: #d0472a;
 
-  /* Brand - Flare (primary) */
-  --primary: #cf4626;
+  /* Brand - Flare (primary). Deep enough for 4.5:1 text on paper, cards and flare-soft. */
+  --primary: #b73e22;
   --primary-foreground: #fdf6ef;
 
   /* Brand - Verdigris (secondary) */
-  --secondary: #0e7c6f;
+  --secondary: #0d7568;
   --secondary-foreground: #f0fbf8;
 
-  /* Brand - Brass (accent) */
-  --accent: #b07f2b;
+  /* Brand - Brass (accent). Darkened from #b07f2b so brass text and brass fills reach 4.5:1. */
+  --accent: #876121;
   --accent-foreground: #fffaf0;
 
   /* Feedback */
   --destructive: #c0392b;
   --destructive-foreground: #fdf6ef;
-  --success: #2f7d4f;
+  --success: #2e7b4e;
 
   /* Raw brand ramps (used directly for washes / gradients) */
-  --flare: #cf4626;
+  --flare: #b73e22;
   --flare-soft: #f7e2d8;
-  --verdigris: #0e7c6f;
+  --verdigris: #0d7568;
   --verdigris-soft: #d6ede8;
-  --brass: #b07f2b;
+  --brass: #876121;
   --brass-soft: #f2e6c9;
 
   --radius: 0.7rem;
@@ -67,7 +68,7 @@
   --muted: #262118;
   --muted-foreground: #a89e8a;
   --border: #322c20;
-  --input: #322c20;
+  --input: #75674b;
   --ring: #e8623d;
 
   --primary: #e8623d;
@@ -84,7 +85,7 @@
   --success: #56b37a;
 
   --flare: #e8623d;
-  --flare-soft: #37211a;
+  --flare-soft: #362019;
   --verdigris: #2ba393;
   --verdigris-soft: #10261f;
   --brass: #d4a23e;
@@ -172,6 +173,18 @@
     outline: 2px solid var(--ring);
     outline-offset: 2px;
     border-radius: var(--radius-sm);
+  }
+
+  /* Honour a reduced-motion preference: no spins, slides or smooth scrolling (WCAG 2.3.3). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   /* Thin, warm scrollbars. */
