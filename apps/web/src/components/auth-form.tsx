@@ -81,9 +81,9 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           />
         </div>
 
-        {oauthMessage ? <p className="text-destructive mb-4 text-sm">{oauthMessage}</p> : null}
+        {oauthMessage ? <p role="alert" className="text-destructive mb-4 text-sm">{oauthMessage}</p> : null}
 
-        {state?.error ? <p className="text-destructive text-sm">{state.error}</p> : null}
+        {state?.error ? <p role="alert" className="text-destructive text-sm">{state.error}</p> : null}
 
         <Button type="submit" size="lg" className="w-full" disabled={pending}>
           {pending ? "…" : isLogin ? "Log in" : "Create account"}
@@ -110,7 +110,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
 
       <p className="text-muted-foreground mt-3 text-center text-xs">
         Reading never needs an account - every review, list, fic and profile is public.{" "}
-        <Link href="/discover" className="text-primary hover:underline">
+        <Link href="/discover" className="text-primary underline">
           Browse the yard
         </Link>
         .

@@ -11,6 +11,7 @@ function Spoiler({ text }: { text: string }) {
     <span
       role="button"
       tabIndex={0}
+      aria-expanded={shown}
       aria-label={shown ? undefined : "Spoiler. Tap to reveal."}
       onClick={() => setShown(true)}
       onKeyDown={(e) => {

@@ -2,7 +2,7 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Spinner({ className }: { className?: string }) {
-  return <Loader2 className={cn("size-4 animate-spin", className)} aria-label="Loading" />;
+  return <Loader2 className={cn("size-4 animate-spin", className)} role="status" aria-label="Loading" />;
 }
 
 export function EmptyState({
@@ -25,7 +25,7 @@ export function EmptyState({
         className,
       )}
     >
-      {Icon ? <Icon className="text-muted-foreground size-8" /> : null}
+      {Icon ? <Icon className="text-muted-foreground size-8" aria-hidden="true" /> : null}
       <div className="space-y-1">
         <p className="font-display text-lg font-semibold">{title}</p>
         {description ? (

@@ -7,14 +7,14 @@ export function RatingHistogram({ buckets }: { buckets: number[] }) {
   const max = Math.max(...buckets, 1);
 
   return (
-    <div className="border-border bg-card rounded-xl border p-4">
-      <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs">
+    <div className="border-border bg-card rounded-xl border p-4" role="img" aria-label={`Rating histogram: ${total.toLocaleString()} ratings total`}>
+      <div className="text-muted-foreground mb-2 flex items-center justify-between text-xs" aria-hidden="true">
         <span className="inline-flex items-center gap-0.5">
-          <Star className="fill-flare text-flare size-3" /> ratings
+          <Star className="fill-flare text-flare size-3" aria-hidden="true" /> ratings
         </span>
         <span>{total.toLocaleString()} rated</span>
       </div>
-      <div className="flex h-20 items-end gap-1">
+      <div className="flex h-20 items-end gap-1" aria-hidden="true">
         {buckets.map((count, i) => (
           <div
             key={i}
@@ -24,7 +24,7 @@ export function RatingHistogram({ buckets }: { buckets: number[] }) {
           />
         ))}
       </div>
-      <div className="text-muted-foreground mt-1.5 flex justify-between text-[10px]">
+      <div className="text-muted-foreground mt-1.5 flex justify-between text-[10px]" aria-hidden="true">
         <span>½</span>
         <span>★★★</span>
         <span>★★★★★</span>

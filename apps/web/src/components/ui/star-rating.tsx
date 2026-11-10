@@ -27,6 +27,7 @@ export function Stars({
   return (
     <span
       className={cn("inline-flex items-center gap-0.5", className)}
+      role="img"
       aria-label={`${stars} out of 5 stars`}
     >
       {[0, 1, 2, 3, 4].map((i) => {

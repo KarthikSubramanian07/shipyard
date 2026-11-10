@@ -20,12 +20,12 @@ export async function SiteHeader() {
           <Logo textClassName="hidden sm:inline" />
         </Link>
 
-        <nav className="ml-2 hidden md:flex">
+        <nav aria-label="Main" className="ml-2 hidden md:flex">
           <Link
             href="/discover"
             className="text-muted-foreground hover:text-foreground flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium"
           >
-            <Compass className="size-4" /> Discover
+            <Compass className="size-4" aria-hidden="true" /> Discover
           </Link>
         </nav>
 
@@ -39,12 +39,15 @@ export async function SiteHeader() {
             <>
               <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex">
                 <Link href="/write" aria-label="Write a fic">
-                  <PenLine />
+                  <PenLine aria-hidden="true" />
                 </Link>
               </Button>
               <Button asChild variant="ghost" size="icon" className="relative">
-                <Link href="/notifications" aria-label="Notifications">
-                  <Bell />
+                <Link
+                  href="/notifications"
+                  aria-label={unread > 0 ? `Notifications, ${unread > 9 ? "9+" : unread} unread` : "Notifications"}
+                >
+                  <Bell aria-hidden="true" />
                   {unread > 0 && (
                     <span className="bg-primary text-primary-foreground absolute right-1.5 top-1.5 flex size-4 items-center justify-center rounded-full text-[10px] font-semibold">
                       {unread > 9 ? "9+" : unread}

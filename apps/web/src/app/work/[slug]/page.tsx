@@ -149,7 +149,7 @@ export default async function WorkPage({
           />
           <Button asChild variant="secondary" className="w-full">
             <Link href={`/write/${work.slug}`}>
-              <PenLine /> Write a fic
+              <PenLine aria-hidden="true" /> Write a fic
             </Link>
           </Button>
         </div>
@@ -176,11 +176,11 @@ export default async function WorkPage({
           </div>
 
           {/* Tabs */}
-          <div className="border-border flex gap-1 border-b">
+          <nav aria-label="Work sections" className="border-border flex gap-1 border-b">
             <TabLink slug={slug} tab="overview" active={tab} label="Overview" />
             <TabLink slug={slug} tab="reviews" active={tab} label={`Reviews (${reviews.length})`} />
             <TabLink slug={slug} tab="fanfic" active={tab} label={`Fanfic (${fics.length})`} />
-          </div>
+          </nav>
 
           {tab === "overview" && (
             <div className="space-y-8">
@@ -343,6 +343,7 @@ function TabLink({
   return (
     <Link
       href={`/work/${slug}${tab === "overview" ? "" : `?tab=${tab}`}`}
+      aria-current={isActive ? "page" : undefined}
       className={`-mb-px border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
         isActive
           ? "border-flare text-foreground"
