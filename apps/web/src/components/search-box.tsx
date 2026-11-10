@@ -2,7 +2,7 @@
 
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface MediaHit {
@@ -28,6 +28,8 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
   const [media, setMedia] = useState<MediaHit[]>([]);
   const [users, setUsers] = useState<UserHit[]>([]);
   const boxRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const panelId = useId();
 
   // Reset and loading state change with the input, not in the effect, so the
   // effect only runs the debounced fetch.
@@ -84,13 +86,44 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
   }
 
   const hasResults = media.length > 0 || users.length > 0;
+  const panelOpen = open && (loading || hasResults);
+  const termLongEnough = q.trim().length >= 2;
+  // Screen readers hear the typeahead's progress without the panel taking focus (WCAG 4.1.3).
+  const status = !termLongEnough
+    ? ""
+    : loading
+      ? "Searching…"
+      : hasResults
+        ? `${media.length + users.length} quick ${media.length + users.length === 1 ? "match" : "matches"}. Press Tab to browse, or Enter to see all results.`
+        : "No quick matches. Press Enter to search everything.";
+
+  // Escape hides the typeahead panel; leaving the box with Tab or a click closes it too.
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Escape" && panelOpen) {
+      e.stopPropagation();
+      setOpen(false);
+      inputRef.current?.focus();
+    }
+  }
+  function onBlur(e: React.FocusEvent) {
+    if (!boxRef.current?.contains(e.relatedTarget as Node | null)) setOpen(false);
+  }
 
   return (
-    <div ref={boxRef} className={cn("relative w-full", className)}>
-      <form onSubmit={submit}>
+    <div
+      ref={boxRef}
+      className={cn("relative w-full", className)}
+      onKeyDown={onKeyDown}
+      onBlur={onBlur}
+    >
+      <form role="search" onSubmit={submit}>
         <div className="relative">
-          <Search className="text-muted-foreground pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2" />
+          <Search
+            aria-hidden="true"
+            className="text-muted-foreground pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2"
+          />
           <input
+            ref={inputRef}
             value={q}
             onChange={(e) => onQueryChange(e.target.value)}
             onFocus={() => hasResults && setOpen(true)}
@@ -98,12 +131,21 @@ export function SearchBox({ className, autoFocus }: { className?: string; autoFo
             placeholder="What did you watch last?"
             className="border-input bg-card placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/40 h-10 w-full rounded-full border pl-9 pr-4 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2"
             aria-label="Search works and people"
+            aria-controls={panelOpen ? panelId : undefined}
           />
         </div>
       </form>
+      <p role="status" className="sr-only">
+        {status}
+      </p>
 
-      {open && (loading || hasResults) && (
-        <div className="border-border bg-popover absolute z-50 mt-2 max-h-[70vh] w-full overflow-auto rounded-xl border p-1.5 shadow-lg">
+      {panelOpen && (
+        <div
+          id={panelId}
+          aria-label="Quick search results"
+          role="region"
+          className="border-border bg-popover absolute z-50 mt-2 max-h-[70vh] w-full overflow-auto rounded-xl border p-1.5 shadow-lg"
+        >
           {loading && !hasResults ? (
             <p className="text-muted-foreground px-3 py-6 text-center text-sm">Searching…</p>
           ) : null}
