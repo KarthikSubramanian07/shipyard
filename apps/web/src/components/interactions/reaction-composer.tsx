@@ -50,12 +50,18 @@ export function ReactionComposer({ workId, authed }: { workId: string; authed: b
         className="border-input bg-card focus-visible:border-ring focus-visible:ring-ring/40 w-full resize-none rounded-lg border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2"
       />
       <div className="flex items-center justify-between">
-        <span className="text-muted-foreground text-xs" aria-live="polite">{280 - body.length}</span>
+        <span className="text-muted-foreground text-xs" aria-live="polite">
+          {280 - body.length}
+        </span>
         <Button size="sm" onClick={post} disabled={pending || !body.trim()}>
           Post reaction
         </Button>
       </div>
-      {error ? <p role="alert" className="text-destructive text-sm">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-destructive text-sm">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

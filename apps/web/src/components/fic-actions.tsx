@@ -86,7 +86,11 @@ export function AddChapter({ ficId, ficSlug }: { ficId: string; ficSlug: string 
         placeholder="Write the next chapter…"
         className="prose-shipyard border-input bg-background focus-visible:ring-ring/40 w-full resize-y rounded-lg border px-3 py-2 focus-visible:outline-none focus-visible:ring-2"
       />
-      {error ? <p role="alert" className="text-destructive text-sm">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-destructive text-sm">
+          {error}
+        </p>
+      ) : null}
       <div className="flex justify-end gap-2">
         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
           Cancel

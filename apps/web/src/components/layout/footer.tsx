@@ -26,7 +26,10 @@ export function SiteFooter() {
           </a>
         </div>
 
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm sm:grid-cols-3">
+        <nav
+          aria-label="Footer"
+          className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm sm:grid-cols-3"
+        >
           <FooterCol title="Explore">
             <FooterLink href="/discover">Discover</FooterLink>
             <FooterLink href="/search">Search</FooterLink>

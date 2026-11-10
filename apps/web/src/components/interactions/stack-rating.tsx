@@ -146,7 +146,12 @@ export function StackRating({
 
   return (
     <div className="space-y-2">
-      <div ref={bucketsRef} role="group" aria-labelledby={labelledBy} className="grid grid-cols-3 gap-2">
+      <div
+        ref={bucketsRef}
+        role="group"
+        aria-labelledby={labelledBy}
+        className="grid grid-cols-3 gap-2"
+      >
         {(Object.keys(BUCKET_META) as Bucket[]).map((b) => (
           <button
             key={b}
@@ -165,25 +170,25 @@ export function StackRating({
         ))}
       </div>
       <div role="status">
-      {value ? (
-        <div className="flex items-center gap-2 text-sm">
-          <TierBadge score={value.score} />
-          <span className="text-muted-foreground">
-            {value.score.toFixed(1)} / 10 · ranked in {BUCKET_META[value.bucket].label}
-          </span>
-          <button
-            type="button"
-            onClick={() => onChange(null)}
-            className="text-muted-foreground hover:text-foreground ml-auto text-xs font-medium"
-          >
-            Clear
-          </button>
-        </div>
-      ) : (
-        <p className="text-muted-foreground text-xs">
-          Triage it, then a couple of quick head-to-heads rank it.
-        </p>
-      )}
+        {value ? (
+          <div className="flex items-center gap-2 text-sm">
+            <TierBadge score={value.score} />
+            <span className="text-muted-foreground">
+              {value.score.toFixed(1)} / 10 · ranked in {BUCKET_META[value.bucket].label}
+            </span>
+            <button
+              type="button"
+              onClick={() => onChange(null)}
+              className="text-muted-foreground hover:text-foreground ml-auto text-xs font-medium"
+            >
+              Clear
+            </button>
+          </div>
+        ) : (
+          <p className="text-muted-foreground text-xs">
+            Triage it, then a couple of quick head-to-heads rank it.
+          </p>
+        )}
       </div>
     </div>
   );

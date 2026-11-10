@@ -159,7 +159,7 @@ export function LogDialog({
                   <label className="text-muted-foreground flex items-center gap-2 text-sm">
                     <input
                       type="checkbox"
-                      className="accent-[var(--flare)] size-4"
+                      className="size-4 accent-[var(--flare)]"
                       checked={hasSpoilers}
                       onChange={(e) => setHasSpoilers(e.target.checked)}
                     />

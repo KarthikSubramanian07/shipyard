@@ -45,7 +45,11 @@ export async function SiteHeader() {
               <Button asChild variant="ghost" size="icon" className="relative">
                 <Link
                   href="/notifications"
-                  aria-label={unread > 0 ? `Notifications, ${unread > 9 ? "9+" : unread} unread` : "Notifications"}
+                  aria-label={
+                    unread > 0
+                      ? `Notifications, ${unread > 9 ? "9+" : unread} unread`
+                      : "Notifications"
+                  }
                 >
                   <Bell aria-hidden="true" />
                   {unread > 0 && (

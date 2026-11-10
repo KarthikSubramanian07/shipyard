@@ -68,7 +68,10 @@ export function FicEditor({ workId, workTitle }: { workId: string; workTitle: st
         aria-expanded={showDetails}
         className="text-primary mt-4 flex items-center gap-1 text-sm font-medium"
       >
-        <ChevronDown className={`size-4 transition-transform ${showDetails ? "" : "-rotate-90"}`} aria-hidden="true" />
+        <ChevronDown
+          className={`size-4 transition-transform ${showDetails ? "" : "-rotate-90"}`}
+          aria-hidden="true"
+        />
         Details &amp; tags
       </button>
 
@@ -122,7 +125,11 @@ export function FicEditor({ workId, workTitle }: { workId: string; workTitle: st
         />
       </div>
 
-      {error ? <p role="alert" className="text-destructive text-sm">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="text-destructive text-sm">
+          {error}
+        </p>
+      ) : null}
 
       <div className="border-border bg-background/90 sticky bottom-0 -mx-4 mt-4 flex items-center justify-between border-t px-4 py-3 backdrop-blur">
         <span className="text-muted-foreground text-sm">

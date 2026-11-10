@@ -90,7 +90,8 @@ export default function ContactPage() {
             rel="noopener noreferrer"
             className="text-brass inline-flex items-center gap-1 font-medium hover:underline"
           >
-            <Coffee className="size-4" aria-hidden="true" /> buy the maker a coffee <span className="sr-only">(opens in a new tab)</span>
+            <Coffee className="size-4" aria-hidden="true" /> buy the maker a coffee{" "}
+            <span className="sr-only">(opens in a new tab)</span>
           </a>
           .
         </p>

@@ -70,7 +70,8 @@ export default function AboutPage() {
           rel="noopener noreferrer"
           className="bg-brass-soft text-brass inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium hover:brightness-105"
         >
-          <Coffee className="size-4" aria-hidden="true" /> Buy the maker a coffee <span className="sr-only">(opens in a new tab)</span>
+          <Coffee className="size-4" aria-hidden="true" /> Buy the maker a coffee{" "}
+          <span className="sr-only">(opens in a new tab)</span>
         </a>
       </div>
     </div>
