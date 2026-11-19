@@ -50,9 +50,11 @@ jobs:
         name: Apply D1 migrations (remote)
         run: pnpm db:migrate:remote
 
+      # `pnpm deploy` is pnpm's built-in workspace deploy command, not the
+      # package's "deploy" script, so call the script explicitly.
       - if: steps.guard.outputs.skip != 'true'
         name: Build & deploy
-        run: pnpm deploy
+        run: pnpm run deploy
 
       # The public front door: a Pages project that forwards to the Worker
       # above over a service binding (https://artshipyard.pages.dev).
